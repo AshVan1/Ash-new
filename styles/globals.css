@@ -1,0 +1,140 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Kelystone';
+  src: url('/fonts/KelystoneDemo.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@theme {
+  --color-silver: #C0C0C0;
+  --color-silver-light: #E5E5E5;
+  --color-silver-dark: #A0A0A0;
+  --color-silver-darker: #808080;
+  --color-silver-darkest: #606060;
+  
+  --color-primary: #C0C0C0;
+  --color-primary-light: #E5E5E5;
+  --color-primary-dark: #A0A0A0;
+  
+  --color-accent: #D3D3D3;
+  --color-accent-light: #F0F0F0;
+  --color-accent-dark: #B0B0B0;
+  
+  --color-background: #0a0a0a;
+  --color-surface: #1a1a1a;
+  --color-surface-light: #2a2a2a;
+  
+  --color-text: #ffffff;
+  --color-text-secondary: #cccccc;
+  --color-text-muted: #999999;
+  
+  --color-border: #333333;
+  --color-border-light: #444444;
+  
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+  --spacing-3xl: 4rem;
+}
+
+/* Dark mode variables */
+:root {
+  --color-silver: #C0C0C0;
+  --color-silver-light: #E5E5E5;
+  --color-silver-dark: #A0A0A0;
+  --color-silver-darker: #808080;
+  --color-silver-darkest: #606060;
+}
+
+/* Custom animations for silver theme */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-silver {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(192, 192, 192, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(192, 192, 192, 0.6);
+  }
+}
+
+/* Utility classes */
+.shimmer {
+  background: linear-gradient(90deg, transparent, rgba(192, 192, 192, 0.2), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+.floating {
+  animation: float 3s ease-in-out infinite;
+}
+
+.silver-pulse {
+  animation: pulse-silver 2s ease-in-out infinite;
+}
+
+.luxury-glow {
+  animation: glow 3s ease-in-out infinite;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 0px;
+  display: none;
+}
+
+/* Luxury text selection */
+::selection {
+  background: rgba(192, 192, 192, 0.3);
+  color: #ffffff;
+}
+
+::-moz-selection {
+  background: rgba(192, 192, 192, 0.3);
+  color: #ffffff;
+} 
