@@ -16,7 +16,7 @@
     "@tsparticles/slim": "^3.9.0",
     "framer-motion": "^11.0.0",
     "gsap": "^3.13.0",
-    "next": "^15.0.0",
+    "next": "^15.5.21",
     "opentype.js": "^1.3.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -30,7 +30,7 @@
     "@types/three": "^0.178.1",
     "autoprefixer": "^10.4.0",
     "eslint": "^9.0.0",
-    "eslint-config-next": "^15.0.0",
+    "eslint-config-next": "^15.5.21",
     "postcss": "^8.4.0",
     "tailwindcss": "^4.0.0",
     "typescript": "^5.6.0"
