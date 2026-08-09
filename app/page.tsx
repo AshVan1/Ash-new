@@ -214,11 +214,13 @@ export default function Home() {
         </div>
       </motion.nav>
 
-      {/* Portfolio */}
-      <section id="portfolio" className="pt-32 pb-24 container mx-auto px-4 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
+      {/* Portfolio — centered between nav and bottom of viewport */}
+      <section
+        id="portfolio"
+        className="relative z-10 min-h-screen container mx-auto px-4 flex flex-col justify-center pt-28 pb-10"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 max-w-7xl mx-auto w-full items-center">
           {modelsLoading ? (
-            // Show 4 loading spinners for the 4 model slots
             <>
               {[0, 1, 2, 3].map((index) => (
                 <motion.div
@@ -226,20 +228,18 @@ export default function Home() {
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: index * 0.1 }}
-                  className="group"
+                  className="group w-full"
                 >
-                  <div className="relative overflow-hidden rounded-3xl">
-                    <div className="aspect-[4/5] flex items-center justify-center relative overflow-hidden">
-                      <div className="spinner">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                      </div>
+                  <div className="h-[min(52vh,420px)] flex items-center justify-center relative overflow-hidden w-full">
+                    <div className="spinner">
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                      <span></span>
                     </div>
                   </div>
                 </motion.div>
@@ -254,7 +254,7 @@ export default function Home() {
                 transition={{ duration: 0.8, delay: index * 0.1 }}
                 className="group cursor-pointer w-full"
               >
-                <div className="aspect-[4/5] flex items-center justify-center relative overflow-hidden w-full">
+                <div className="h-[min(52vh,420px)] flex items-center justify-center relative overflow-hidden w-full">
                   <div className="w-full h-full">
                     <ColoredModel 
                       modelPath={model.path}
@@ -271,7 +271,7 @@ export default function Home() {
         </div>
 
         {/* Navigation Controls */}
-        <div className="flex justify-center items-center mt-12">
+        <div className="flex justify-center items-center mt-8 shrink-0">
           <button
             onClick={handleViewPrevious}
             className="custom-nav-button"
