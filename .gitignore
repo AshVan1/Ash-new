@@ -10,10 +10,14 @@
 
 # production
 /build
+/.next/
+/out/
 
 # misc
 .DS_Store
 *.pem
+* 2.*
+* 2/
 
 # debug
 npm-debug.log*

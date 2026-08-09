@@ -13,16 +13,11 @@ gsap.registerPlugin(ScrollTrigger);
 export const JewelryHeroSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const scrollProgressRef = useRef<HTMLDivElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
 
   const smoothCameraPos = useRef({ x: 0, y: 30, z: 100 });
   const cameraVelocity = useRef({ x: 0, y: 0, z: 0 });
   
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [currentSection, setCurrentSection] = useState(1);
   const [isReady, setIsReady] = useState(false);
-  const totalSections = 2;
   
   const threeRefs = useRef<{
     scene: THREE.Scene | null;
@@ -416,39 +411,6 @@ export const JewelryHeroSection = () => {
     refs.locations = locations;
   };
 
-  // GSAP Animations
-  useEffect(() => {
-    if (!isReady) return;
-    
-    gsap.set([menuRef.current, scrollProgressRef.current], {
-      visibility: 'visible'
-    });
-
-    const tl = gsap.timeline();
-
-    if (menuRef.current) {
-      tl.from(menuRef.current, {
-        x: -100,
-        opacity: 0,
-        duration: 1.2,
-        ease: "power3.out"
-      });
-    }
-
-    if (scrollProgressRef.current) {
-      tl.from(scrollProgressRef.current, {
-        opacity: 0,
-        y: 30,
-        duration: 1,
-        ease: "power2.out"
-      }, "-=0.4");
-    }
-
-    return () => {
-      tl.kill();
-    };
-  }, [isReady]);
-
   // Scroll handling
   useEffect(() => {
     const handleScroll = () => {
@@ -457,8 +419,6 @@ export const JewelryHeroSection = () => {
       const documentHeight = document.documentElement.scrollHeight;
       const maxScroll = documentHeight - windowHeight;
       const progress = Math.min(scrollY / maxScroll, 1);
-      
-      setScrollProgress(progress);
 
       const { current: refs } = threeRefs;
       
@@ -467,17 +427,11 @@ export const JewelryHeroSection = () => {
       
       // Hide hero content when we're near the end of the 3D section
       const heroContent = document.querySelector('.hero-content') as HTMLElement;
-      const scrollIndicator = document.querySelector('.scroll-progress') as HTMLElement;
-      const sideMenu = document.querySelector('.side-menu') as HTMLElement;
       
       if (progress > heroEndProgress) {
         if (heroContent) heroContent.style.opacity = '0';
-        if (scrollIndicator) scrollIndicator.style.opacity = '0';
-        if (sideMenu) sideMenu.style.opacity = '0';
       } else {
         if (heroContent) heroContent.style.opacity = '1';
-        if (scrollIndicator) scrollIndicator.style.opacity = '1';
-        if (sideMenu) sideMenu.style.opacity = '1';
       }
       
       // Hide laser when user scrolls to portfolio section
@@ -541,32 +495,10 @@ export const JewelryHeroSection = () => {
     <>
       <div ref={containerRef} className="hero-container jewelry-style">
         <canvas ref={canvasRef} className="hero-canvas" />
-        
-        {/* Side menu */}
-        <div ref={menuRef} className="side-menu" style={{ visibility: 'hidden' }}>
-          <div className="menu-icon">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-        </div>
 
         {/* Main content - no text, just visual effects */}
         <div className="hero-content jewelry-content">
           {/* Empty - no text content */}
-        </div>
-
-        {/* Scroll progress indicator */}
-        <div ref={scrollProgressRef} className="scroll-progress" style={{ visibility: 'hidden' }}>
-          <div className="progress-track">
-            <div 
-              className="progress-fill" 
-              style={{ width: `${scrollProgress * 100}%` }}
-            />
-          </div>
-          <div className="section-counter">
-            01 / 01
-          </div>
         </div>
       </div>
 
@@ -587,35 +519,6 @@ export const JewelryHeroSection = () => {
           height: 100%;
           z-index: 1;
           image-rendering: auto;
-          image-rendering: crisp-edges;
-          image-rendering: pixelated;
-        }
-
-        .side-menu {
-          position: fixed;
-          left: 2rem;
-          top: 50%;
-          transform: translateY(-50%);
-          z-index: 10;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 2rem;
-          transition: opacity 0.5s ease;
-        }
-
-        .menu-icon {
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-          cursor: pointer;
-        }
-
-        .menu-icon span {
-          width: 20px;
-          height: 2px;
-          background: #C0C0C0;
-          transition: all 0.3s ease;
         }
 
         .hero-content {
@@ -627,89 +530,6 @@ export const JewelryHeroSection = () => {
           z-index: 5;
           max-width: 90vw;
           transition: opacity 0.5s ease;
-        }
-
-        .hero-title {
-          font-size: clamp(3rem, 12vw, 8rem);
-          font-weight: 900;
-          line-height: 0.9;
-          margin-bottom: 2rem;
-          background: linear-gradient(135deg, #C0C0C0, #E5E5E5, #C0C0C0);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-          text-shadow: 0 0 20px rgba(192, 192, 192, 0.2);
-          letter-spacing: 0.02em;
-          will-change: transform;
-        }
-
-        .title-char {
-          display: inline-block;
-          transition: all 0.3s ease;
-        }
-
-        .hero-subtitle {
-          font-size: clamp(1rem, 2.5vw, 1.5rem);
-          color: rgba(255, 255, 255, 0.8);
-          line-height: 1.6;
-          max-width: 600px;
-          margin: 0 auto;
-          transition: all 0.6s ease;
-        }
-
-        .subtitle-line {
-          margin: 0.5rem 0;
-          opacity: 0.9;
-          transition: all 0.4s ease;
-        }
-
-        .scroll-progress {
-          position: fixed;
-          right: 2rem;
-          top: 50%;
-          transform: translateY(-50%);
-          z-index: 10;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 1rem;
-          transition: opacity 0.5s ease;
-        }
-
-        .progress-track {
-          width: 2px;
-          height: 100px;
-          background: rgba(192, 192, 192, 0.2);
-          border-radius: 1px;
-          overflow: hidden;
-        }
-
-        .progress-fill {
-          height: 100%;
-          background: linear-gradient(to bottom, #C0C0C0, #E5E5E5);
-          border-radius: 1px;
-          transition: width 0.3s ease;
-        }
-
-        .section-counter {
-          font-size: 0.75rem;
-          font-weight: 600;
-          color: #C0C0C0;
-          opacity: 0.8;
-        }
-
-        @media (max-width: 768px) {
-          .side-menu, .scroll-progress {
-            display: none;
-          }
-          
-          .hero-content {
-            padding: 1rem;
-          }
-          
-          .hero-canvas {
-            image-rendering: auto;
-          }
         }
       `}</style>
     </>
