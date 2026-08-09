@@ -549,7 +549,6 @@ export const JewelryHeroSection = () => {
             <span></span>
             <span></span>
           </div>
-          <div className="vertical-text">CRAFT</div>
         </div>
 
         {/* Main content - no text, just visual effects */}
@@ -559,7 +558,6 @@ export const JewelryHeroSection = () => {
 
         {/* Scroll progress indicator */}
         <div ref={scrollProgressRef} className="scroll-progress" style={{ visibility: 'hidden' }}>
-          <div className="scroll-text">EXPLORE</div>
           <div className="progress-track">
             <div 
               className="progress-fill" 
@@ -620,16 +618,6 @@ export const JewelryHeroSection = () => {
           transition: all 0.3s ease;
         }
 
-        .vertical-text {
-          writing-mode: vertical-rl;
-          text-orientation: mixed;
-          font-size: 0.75rem;
-          font-weight: 600;
-          letter-spacing: 0.2em;
-          color: #C0C0C0;
-          opacity: 0.8;
-        }
-
         .hero-content {
           position: fixed;
           top: 50%;
@@ -686,16 +674,6 @@ export const JewelryHeroSection = () => {
           align-items: center;
           gap: 1rem;
           transition: opacity 0.5s ease;
-        }
-
-        .scroll-text {
-          font-size: 0.75rem;
-          font-weight: 600;
-          letter-spacing: 0.2em;
-          color: #C0C0C0;
-          opacity: 0.8;
-          writing-mode: vertical-rl;
-          text-orientation: mixed;
         }
 
         .progress-track {
