@@ -1,31 +1,15 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import Link from 'next/link'
 import { useState, useEffect } from 'react'
-import { JewelryHeroSection } from '@/components/ui/jewelry-hero-section'
-import ChromeSignature3D from '@/components/ui/ChromeSignature3D'
 import ColoredModel from '@/components/ui/ColoredModel'
-import CircularText from '@/components/ui/CircularText'
 
 export default function Home() {
-  const [selectedColor, setSelectedColor] = useState<string>("#C0C0C0") // Default silver
+  const [selectedColor] = useState<string>("#C0C0C0") // Default silver
   const [currentPage, setCurrentPage] = useState(0) // Track which 4 models to show
   const [isLoading, setIsLoading] = useState(true) // Loading state
   const [modelsLoading, setModelsLoading] = useState(true) // 3D models loading state
-  const [activeSection, setActiveSection] = useState<string>("") // Track active section - start with none
-  const [showScrollIndicator, setShowScrollIndicator] = useState(true) // Track scroll indicator visibility
-  const [showModelsText, setShowModelsText] = useState(false) // Track "models below" text visibility
-  const [hasReachedPortfolio, setHasReachedPortfolio] = useState(false) // Track if user has reached portfolio section
-
-  const getColorForSelection = (colorName: string) => {
-    switch(colorName) {
-      case "silver": return "#C0C0C0"
-      case "gold": return "#FFD700"
-      case "platinum": return "#E5E4E2"
-      default: return "#C0C0C0"
-    }
-  }
+  const [activeSection, setActiveSection] = useState<string>("portfolio")
 
   // All 16 models organized in groups of 4
   const allModels = [
@@ -64,43 +48,34 @@ export default function Home() {
 
   const handleViewMore = () => {
     setCurrentPage((prev) => (prev + 1) % totalPages)
-    setModelsLoading(true) // Reset loading state when changing pages
+    setModelsLoading(true)
   }
 
   const handleViewPrevious = () => {
     setCurrentPage((prev) => (prev - 1 + totalPages) % totalPages)
-    setModelsLoading(true) // Reset loading state when changing pages
+    setModelsLoading(true)
   }
 
-  // Hide loading state after a short delay
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false)
-    }, 100) // Very short delay to show loading state
+      setModelsLoading(false)
+    }, 100)
     return () => clearTimeout(timer)
   }, [])
 
-  // Handle 3D models loading with 1-second delay (only for page changes)
   useEffect(() => {
-    if (hasReachedPortfolio) {
-      const timer = setTimeout(() => {
-        setModelsLoading(false)
-      }, 1000) // 1-second delay for model rendering when changing pages
-      return () => clearTimeout(timer)
-    }
-  }, [currentPage, hasReachedPortfolio]) // Reset when page changes, but only if user has reached portfolio
+    if (!modelsLoading) return
+    const timer = setTimeout(() => {
+      setModelsLoading(false)
+    }, 400)
+    return () => clearTimeout(timer)
+  }, [currentPage, modelsLoading])
 
   // Handle scroll-based navigation highlighting
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY + window.innerHeight / 2
-
-      // Hide scroll indicator as soon as user starts scrolling
-      if (window.scrollY > 0) {
-        setShowScrollIndicator(false)
-      }
-
-      // Get section positions
       const portfolioSection = document.getElementById('portfolio')
       const aboutSection = document.getElementById('about')
       const contactSection = document.getElementById('contact')
@@ -110,37 +85,18 @@ export default function Home() {
         const aboutTop = aboutSection.offsetTop
         const contactTop = contactSection.offsetTop
 
-        // Show "models below" text when approaching portfolio section
-        if (scrollPosition >= portfolioTop - (window.innerHeight * 2) && scrollPosition < portfolioTop - window.innerHeight) {
-          setShowModelsText(true)
-        } else {
-          setShowModelsText(false)
-        }
-
-        // Only highlight portfolio when actually in the portfolio section
-        if (scrollPosition >= portfolioTop && scrollPosition < aboutTop) {
-          setActiveSection("portfolio")
-          // Set hasReachedPortfolio to true when user first enters portfolio section
-          if (!hasReachedPortfolio) {
-            setHasReachedPortfolio(true)
-            setModelsLoading(true) // Start loading animation
-            // Show loading for 2 seconds when first reaching portfolio
-            setTimeout(() => {
-              setModelsLoading(false)
-            }, 2000)
-          }
-        } else if (scrollPosition >= aboutTop && scrollPosition < contactTop) {
+        if (scrollPosition >= aboutTop && scrollPosition < contactTop) {
           setActiveSection("about")
         } else if (scrollPosition >= contactTop) {
           setActiveSection("contact")
         } else {
-          // When in hero section (top of page), no section is active
-          setActiveSection("")
+          setActiveSection("portfolio")
         }
       }
     }
 
     window.addEventListener('scroll', handleScroll)
+    handleScroll()
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
@@ -155,54 +111,11 @@ export default function Home() {
         </div>
       )}
 
-      {/* 3D Jewelry Hero Section */}
-      <JewelryHeroSection />
-
-      {/* Models Below Text */}
-      {showModelsText && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.5 }}
-          className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none"
-        >
-          <div className="models-text">
-            models below
-            <div className="loading-text">
-              Loading times may vary
-            </div>
-          </div>
-        </motion.div>
-      )}
-
-      {/* Scroll Indicator */}
-      {showScrollIndicator && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ delay: 3, duration: 1 }}
-          className="fixed top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-40 pointer-events-none"
-        >
-          <div className="scroll-indicator">
-            <div className="mouse">
-              <div className="wheel"></div>
-            </div>
-            <div className="arrow">
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
-          </div>
-        </motion.div>
-      )}
-
       {/* Navigation */}
       <motion.nav 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 2 }}
+        transition={{ duration: 0.4 }}
         className="fixed top-0 w-full z-50 py-6"
       >
         <div className="container mx-auto px-6">
@@ -301,8 +214,8 @@ export default function Home() {
         </div>
       </motion.nav>
 
-      {/* Portfolio Preview Section - positioned after 3D hero */}
-      <section id="portfolio" className="py-24 container mx-auto px-4 relative z-10" style={{ marginTop: '300vh' }}>
+      {/* Portfolio */}
+      <section id="portfolio" className="pt-32 pb-24 container mx-auto px-4 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
           {modelsLoading ? (
             // Show 4 loading spinners for the 4 model slots
@@ -797,104 +710,6 @@ export default function Home() {
         .photo-card:hover .photo-hover {
           opacity: 1;
           transform: rotateY(0deg);
-        }
-
-        /* Scroll Indicator Styles */
-        .scroll-indicator {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 8px;
-        }
-
-        .mouse {
-          width: 30px;
-          height: 50px;
-          border: 2px solid #ffffff;
-          border-radius: 20px;
-          display: flex;
-          justify-content: center;
-          align-items: flex-start;
-          padding-top: 8px;
-        }
-
-        .wheel {
-          width: 4px;
-          height: 8px;
-          background-color: #ffffff;
-          border-radius: 2px;
-          animation: scroll 2s infinite;
-        }
-
-        @keyframes scroll {
-          0% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-          100% {
-            opacity: 0;
-            transform: translateY(-15px);
-          }
-        }
-
-        .arrow {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 2px;
-        }
-
-        .arrow span {
-          width: 2px;
-          height: 8px;
-          background-color: #ffffff;
-          border-radius: 1px;
-          animation: arrow 2s infinite;
-        }
-
-        .arrow span:nth-child(1) {
-          animation-delay: 0s;
-        }
-
-        .arrow span:nth-child(2) {
-          animation-delay: 0.2s;
-        }
-
-        .arrow span:nth-child(3) {
-          animation-delay: 0.4s;
-        }
-
-        @keyframes arrow {
-          0%, 100% {
-            opacity: 0;
-            transform: translateY(0);
-          }
-          50% {
-            opacity: 1;
-            transform: translateY(-5px);
-          }
-        }
-
-        /* Models Text Styles */
-        .models-text {
-          color: #000000;
-          font-size: 24px;
-          font-weight: 700;
-          letter-spacing: 0.2em;
-          text-transform: uppercase;
-          font-family: 'Oxygen', sans-serif;
-          text-align: center;
-        }
-
-        .loading-text {
-          color: #000000;
-          font-size: 12px;
-          font-weight: 400;
-          letter-spacing: 0.1em;
-          text-transform: none;
-          font-family: 'Helvetica', sans-serif;
-          text-align: center;
-          margin-top: 8px;
         }
 
         /* Contact Section Styles */

@@ -14,7 +14,111 @@ interface ColoredModelProps {
   color?: string
 }
 
-function Model({
+function applyChromeMaterial(root: THREE.Object3D, color: string) {
+  root.traverse((obj) => {
+    if ((obj as THREE.Mesh).isMesh) {
+      const mesh = obj as THREE.Mesh
+      mesh.material = new THREE.MeshPhysicalMaterial({
+        color,
+        metalness: 1,
+        roughness: 0,
+        reflectivity: 1,
+        clearcoat: 1,
+        clearcoatRoughness: 0,
+        envMapIntensity: 2.0,
+        ior: 1.8,
+        transmission: 0.2,
+        thickness: 0.8,
+        attenuationDistance: 1,
+        attenuationColor: '#ffffff',
+      })
+    }
+  })
+}
+
+function StlModel({
+  modelPath,
+  rotationSpeed = 0.5,
+  color = '#ffffff',
+}: {
+  modelPath: string
+  rotationSpeed?: number
+  color?: string
+}) {
+  const meshRef = useRef<THREE.Mesh>(null)
+  const [geometry, setGeometry] = useState<THREE.BufferGeometry | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+
+    const load = async () => {
+      try {
+        const { STLLoader } = await import('three/addons/loaders/STLLoader.js')
+        const loader = new STLLoader()
+        loader.load(modelPath, (geo) => {
+          if (cancelled) return
+          geo.computeBoundingBox()
+          const center = new THREE.Vector3()
+          geo.boundingBox?.getCenter(center)
+          geo.translate(-center.x, -center.y, -center.z)
+
+          const box = new THREE.Box3().setFromBufferAttribute(
+            geo.attributes.position as THREE.BufferAttribute
+          )
+          const size = box.getSize(new THREE.Vector3())
+          const maxDim = Math.max(size.x, size.y, size.z) || 1
+          const scaleFactor = 2 / maxDim
+          geo.scale(scaleFactor, scaleFactor, scaleFactor)
+          setGeometry(geo)
+        })
+      } catch (error) {
+        console.error('Error loading STL:', error)
+      }
+    }
+
+    load()
+    return () => {
+      cancelled = true
+    }
+  }, [modelPath])
+
+  useEffect(() => {
+    if (meshRef.current) {
+      meshRef.current.rotation.x = 0.5
+      meshRef.current.rotation.y = 0.8
+      meshRef.current.rotation.z = 0.2
+    }
+  }, [geometry])
+
+  useFrame((_, delta) => {
+    if (meshRef.current) {
+      meshRef.current.rotation.y += delta * rotationSpeed
+    }
+  })
+
+  if (!geometry) return null
+
+  return (
+    <mesh ref={meshRef} geometry={geometry}>
+      <meshPhysicalMaterial
+        color={color}
+        metalness={1}
+        roughness={0}
+        reflectivity={1}
+        clearcoat={1}
+        clearcoatRoughness={0}
+        envMapIntensity={2.0}
+        ior={1.8}
+        transmission={0.2}
+        thickness={0.8}
+        attenuationDistance={1}
+        attenuationColor="#ffffff"
+      />
+    </mesh>
+  )
+}
+
+function GlbModel({
   modelPath,
   rotationSpeed = 0.5,
   color = '#ffffff',
@@ -28,25 +132,7 @@ function Model({
   const cloned = useMemo(() => scene.clone(true), [scene])
 
   useEffect(() => {
-    cloned.traverse((obj) => {
-      if ((obj as THREE.Mesh).isMesh) {
-        const mesh = obj as THREE.Mesh
-        mesh.material = new THREE.MeshPhysicalMaterial({
-          color,
-          metalness: 1,
-          roughness: 0,
-          reflectivity: 1,
-          clearcoat: 1,
-          clearcoatRoughness: 0,
-          envMapIntensity: 2.0,
-          ior: 1.8,
-          transmission: 0.2,
-          thickness: 0.8,
-          attenuationDistance: 1,
-          attenuationColor: '#ffffff',
-        })
-      }
-    })
+    applyChromeMaterial(cloned, color)
   }, [cloned, color])
 
   useEffect(() => {
@@ -70,6 +156,11 @@ function Model({
       </Center>
     </group>
   )
+}
+
+function Model(props: { modelPath: string; rotationSpeed?: number; color?: string }) {
+  const isGlb = /\.glb($|\?)/i.test(props.modelPath)
+  return isGlb ? <GlbModel {...props} /> : <StlModel {...props} />
 }
 
 export default function ColoredModel({
