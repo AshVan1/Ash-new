@@ -214,64 +214,66 @@ export default function Home() {
         </div>
       </motion.nav>
 
-      {/* Portfolio — centered between nav and bottom of viewport */}
+      {/* Portfolio — models centered; Back/Next pinned to bottom with py-6 inset */}
       <section
         id="portfolio"
-        className="relative z-10 min-h-screen container mx-auto px-4 flex flex-col justify-center pt-28 pb-10"
+        className="relative z-10 min-h-screen container mx-auto px-4 flex flex-col pt-28 pb-6"
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 max-w-7xl mx-auto w-full items-center">
-          {modelsLoading ? (
-            <>
-              {[0, 1, 2, 3].map((index) => (
+        <div className="flex-1 flex items-center w-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 max-w-7xl mx-auto w-full items-center">
+            {modelsLoading ? (
+              <>
+                {[0, 1, 2, 3].map((index) => (
+                  <motion.div
+                    key={`loading-${index}`}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: index * 0.1 }}
+                    className="group w-full"
+                  >
+                    <div className="h-[min(52vh,420px)] flex items-center justify-center relative overflow-hidden w-full">
+                      <div className="spinner">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </>
+            ) : (
+              currentModels.map((model, index) => (
                 <motion.div
-                  key={`loading-${index}`}
+                  key={`${currentPage}-${index}`}
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: index * 0.1 }}
-                  className="group w-full"
+                  className="group cursor-pointer w-full"
                 >
                   <div className="h-[min(52vh,420px)] flex items-center justify-center relative overflow-hidden w-full">
-                    <div className="spinner">
-                      <span></span>
-                      <span></span>
-                      <span></span>
-                      <span></span>
-                      <span></span>
-                      <span></span>
-                      <span></span>
-                      <span></span>
+                    <div className="w-full h-full">
+                      <ColoredModel 
+                        modelPath={model.path}
+                        scale={1.2}
+                        rotationSpeed={0.3}
+                        color={selectedColor}
+                        className="w-full h-full"
+                      />
                     </div>
                   </div>
                 </motion.div>
-              ))}
-            </>
-          ) : (
-            currentModels.map((model, index) => (
-              <motion.div
-                key={`${currentPage}-${index}`}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
-                className="group cursor-pointer w-full"
-              >
-                <div className="h-[min(52vh,420px)] flex items-center justify-center relative overflow-hidden w-full">
-                  <div className="w-full h-full">
-                    <ColoredModel 
-                      modelPath={model.path}
-                      scale={1.2}
-                      rotationSpeed={0.3}
-                      color={selectedColor}
-                      className="w-full h-full"
-                    />
-                  </div>
-                </div>
-              </motion.div>
-            ))
-          )}
+              ))
+            )}
+          </div>
         </div>
 
-        {/* Navigation Controls */}
-        <div className="flex justify-center items-center mt-8 shrink-0">
+        {/* Navigation Controls — bottom inset matches nav py-6 */}
+        <div className="flex justify-center items-center mt-auto shrink-0">
           <button
             onClick={handleViewPrevious}
             className="custom-nav-button"
@@ -282,7 +284,7 @@ export default function Home() {
             <p data-text="Back">Back</p>
           </button>
 
-          <div className="text-off-white text-lg font-bold mx-8">
+          <div className="text-[#7A1F2B] text-lg font-bold mx-8">
             {currentPage + 1} / {totalPages}
           </div>
 
@@ -523,7 +525,7 @@ export default function Home() {
 
         /* Custom Navigation Buttons */
         .custom-nav-button {
-          --primary-color: #000000;
+          --primary-color: #7A1F2B;
           --hovered-color: #FFFFFF;
           position: relative;
           display: flex;
