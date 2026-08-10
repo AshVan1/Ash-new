@@ -100,6 +100,12 @@ export default function Home() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id)
+    if (!element) return
+    element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-gray-900 to-slate-900">
       {/* Loading State */}
@@ -137,16 +143,7 @@ export default function Home() {
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                 className="cursor-pointer"
-                onClick={() => {
-                  const element = document.getElementById('portfolio')
-                  if (element) {
-                    const offset = window.innerHeight / 2 - element.offsetHeight / 2
-                    element.scrollIntoView({ 
-                      behavior: 'smooth',
-                      block: 'center'
-                    })
-                  }
-                }}
+                onClick={() => scrollToSection('portfolio')}
               >
                 <div className="h-18 w-44 flex items-center justify-center">
                   <span className={`text-xl font-bold tracking-wide transition-colors duration-200 uppercase font-['Oxygen', sans-serif] ${
@@ -161,16 +158,7 @@ export default function Home() {
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 className="cursor-pointer"
-                onClick={() => {
-                  const element = document.getElementById('about')
-                  if (element) {
-                    const offset = window.innerHeight / 2 - element.offsetHeight / 2
-                    element.scrollIntoView({ 
-                      behavior: 'smooth',
-                      block: 'center'
-                    })
-                  }
-                }}
+                onClick={() => scrollToSection('about')}
               >
                 <div className="h-18 w-40 flex items-center justify-center">
                   <span className={`text-xl font-bold tracking-wide transition-colors duration-200 uppercase font-['Oxygen', sans-serif] ${
@@ -185,16 +173,7 @@ export default function Home() {
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 className="cursor-pointer"
-                onClick={() => {
-                  const element = document.getElementById('contact')
-                  if (element) {
-                    const offset = window.innerHeight / 2 - element.offsetHeight / 2
-                    element.scrollIntoView({ 
-                      behavior: 'smooth',
-                      block: 'center'
-                    })
-                  }
-                }}
+                onClick={() => scrollToSection('contact')}
               >
                 <div className="h-18 w-44 flex items-center justify-center">
                   <span className={`text-xl font-bold tracking-wide transition-colors duration-200 uppercase font-['Oxygen', sans-serif] ${
@@ -219,7 +198,7 @@ export default function Home() {
         id="portfolio"
         className="relative z-10 min-h-screen container mx-auto px-4 flex flex-col pt-32 pb-10 md:pb-14 lg:pb-16"
       >
-        <div className="flex-1 flex items-center w-full">
+        <div className="flex-1 flex items-center w-full pb-6 md:pb-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 max-w-7xl mx-auto w-full items-center">
             {modelsLoading ? (
               <>
@@ -302,14 +281,16 @@ export default function Home() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-64 container mx-auto px-4 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start pt-32">
+      <section
+        id="about"
+        className="min-h-screen container mx-auto px-4 relative z-10 flex items-center py-28"
+      >
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center w-full">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="pt-16"
           >
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-8 font-['Helvetica']">
               My Journey in Jewelry Design
@@ -328,7 +309,7 @@ export default function Home() {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="relative pt-12 flex justify-end"
+            className="relative flex justify-center lg:justify-end"
           >
             <div className="photo-card">
               <div className="photo-container">
@@ -353,8 +334,11 @@ export default function Home() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-64 container mx-auto px-4 relative z-10">
-        <div className="flex justify-center items-center pt-24">
+      <section
+        id="contact"
+        className="min-h-screen container mx-auto px-4 relative z-10 flex items-center justify-center py-28"
+      >
+        <div className="flex justify-center items-center w-full">
           <div className="outer">
             <div className="card">
               <div className="contact-content">
