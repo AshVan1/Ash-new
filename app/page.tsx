@@ -217,7 +217,7 @@ export default function Home() {
       {/* Portfolio — models centered; Back/Next pinned to bottom with py-6 inset */}
       <section
         id="portfolio"
-        className="relative z-10 min-h-screen container mx-auto px-4 flex flex-col pt-28 pb-6"
+        className="relative z-10 min-h-screen container mx-auto px-4 flex flex-col pt-28 pb-16 md:pb-20 lg:pb-24"
       >
         <div className="flex-1 flex items-center w-full">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 max-w-7xl mx-auto w-full items-center">
@@ -281,10 +281,10 @@ export default function Home() {
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            <p data-text="Back">Back</p>
+            <p data-text="BACK">BACK</p>
           </button>
 
-          <div className="text-[#7A1F2B] text-lg font-bold mx-8">
+          <div className="text-[#7A1F2B] text-xl font-bold tracking-wide uppercase mx-8 font-['Oxygen',sans-serif]">
             {currentPage + 1} / {totalPages}
           </div>
 
@@ -292,7 +292,7 @@ export default function Home() {
             onClick={handleViewMore}
             className="custom-nav-button"
           >
-            <p data-text="Next">Next</p>
+            <p data-text="NEXT">NEXT</p>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
@@ -529,8 +529,11 @@ export default function Home() {
           --hovered-color: #FFFFFF;
           position: relative;
           display: flex;
-          font-weight: 600;
-          font-size: 20px;
+          font-family: 'Oxygen', sans-serif;
+          font-weight: 700;
+          font-size: 1.25rem;
+          letter-spacing: 0.025em;
+          text-transform: uppercase;
           gap: 0.5rem;
           align-items: center;
         }
@@ -538,7 +541,11 @@ export default function Home() {
         .custom-nav-button p {
           margin: 0;
           position: relative;
-          font-size: 20px;
+          font-family: 'Oxygen', sans-serif;
+          font-size: 1.25rem;
+          font-weight: 700;
+          letter-spacing: 0.025em;
+          text-transform: uppercase;
           color: var(--primary-color);
         }
 
