@@ -126,7 +126,7 @@ export default function Home() {
               className="relative"
             >
               <div className="h-16 md:h-20 lg:h-24 w-32 md:w-40 lg:w-48 flex items-center justify-start">
-                <span className="text-off-white text-2xl md:text-3xl lg:text-4xl font-bold tracking-wide hover:text-white transition-colors duration-200 uppercase font-['Oxygen', sans-serif]">
+                <span className="text-[#7A1F2B] text-2xl md:text-3xl lg:text-4xl font-bold tracking-wide hover:text-white transition-colors duration-200 uppercase font-['Oxygen', sans-serif]">
                   AD
                 </span>
               </div>
@@ -152,7 +152,7 @@ export default function Home() {
                   <span className={`text-xl font-bold tracking-wide transition-colors duration-200 uppercase font-['Oxygen', sans-serif] ${
                     activeSection === "portfolio" 
                       ? "text-white" 
-                      : "text-off-white hover:text-white"
+                      : "text-[#7A1F2B] hover:text-white"
                   }`}>
                   PORTFOLIO
                   </span>
@@ -176,7 +176,7 @@ export default function Home() {
                   <span className={`text-xl font-bold tracking-wide transition-colors duration-200 uppercase font-['Oxygen', sans-serif] ${
                     activeSection === "about" 
                       ? "text-white" 
-                      : "text-off-white hover:text-white"
+                      : "text-[#7A1F2B] hover:text-white"
                   }`}>
                   ABOUT
                   </span>
@@ -200,7 +200,7 @@ export default function Home() {
                   <span className={`text-xl font-bold tracking-wide transition-colors duration-200 uppercase font-['Oxygen', sans-serif] ${
                     activeSection === "contact" 
                       ? "text-white" 
-                      : "text-off-white hover:text-white"
+                      : "text-[#7A1F2B] hover:text-white"
                   }`}>
                   CONTACT
                   </span>
@@ -529,7 +529,7 @@ export default function Home() {
           --hovered-color: #FFFFFF;
           position: relative;
           display: flex;
-          font-weight: 600;
+          font-weight: 700;
           font-size: 20px;
           text-transform: uppercase;
           gap: 0.5rem;
@@ -540,7 +540,7 @@ export default function Home() {
           margin: 0;
           position: relative;
           font-size: 20px;
-          font-weight: 600;
+          font-weight: 700;
           text-transform: uppercase;
           color: var(--primary-color);
         }
