@@ -9,7 +9,7 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState(0) // Track which 4 models to show
   const [isLoading, setIsLoading] = useState(true) // Loading state
   const [modelsLoading, setModelsLoading] = useState(true) // 3D models loading state
-  const [activeSection, setActiveSection] = useState<string>("portfolio")
+  const [activeSection, setActiveSection] = useState<string>("")
 
   // All 16 models organized in groups of 4
   const allModels = [
@@ -90,7 +90,7 @@ export default function Home() {
         } else if (scrollPosition >= contactTop) {
           setActiveSection("contact")
         } else {
-          setActiveSection("portfolio")
+          setActiveSection("")
         }
       }
     }
@@ -217,7 +217,7 @@ export default function Home() {
       {/* Portfolio — models centered; Back/Next pinned to bottom with py-6 inset */}
       <section
         id="portfolio"
-        className="relative z-10 min-h-screen container mx-auto px-4 flex flex-col pt-28 pb-16 md:pb-20 lg:pb-24"
+        className="relative z-10 min-h-screen container mx-auto px-4 flex flex-col pt-28 pb-12 md:pb-16 lg:pb-20"
       >
         <div className="flex-1 flex items-center w-full">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 max-w-7xl mx-auto w-full items-center">
@@ -284,7 +284,7 @@ export default function Home() {
             <p data-text="BACK">BACK</p>
           </button>
 
-          <div className="text-[#7A1F2B] text-xl font-bold tracking-wide uppercase mx-8 font-['Oxygen',sans-serif]">
+          <div className="text-[#7A1F2B] text-lg font-bold mx-8 uppercase">
             {currentPage + 1} / {totalPages}
           </div>
 
@@ -529,10 +529,8 @@ export default function Home() {
           --hovered-color: #FFFFFF;
           position: relative;
           display: flex;
-          font-family: 'Oxygen', sans-serif;
-          font-weight: 700;
-          font-size: 1.25rem;
-          letter-spacing: 0.025em;
+          font-weight: 600;
+          font-size: 20px;
           text-transform: uppercase;
           gap: 0.5rem;
           align-items: center;
@@ -541,10 +539,8 @@ export default function Home() {
         .custom-nav-button p {
           margin: 0;
           position: relative;
-          font-family: 'Oxygen', sans-serif;
-          font-size: 1.25rem;
-          font-weight: 700;
-          letter-spacing: 0.025em;
+          font-size: 20px;
+          font-weight: 600;
           text-transform: uppercase;
           color: var(--primary-color);
         }
