@@ -123,9 +123,7 @@ export default function Contact() {
       <section className="py-16 container mx-auto px-4 relative z-10">
         <div className="flex justify-center items-center pt-16">
           <div className="outer">
-            <div className="dot"></div>
             <div className="card">
-              <div className="ray"></div>
               <div className="contact-content">
                 <div className="contact-item">
                   <div className="icon-container">
@@ -177,39 +175,6 @@ export default function Contact() {
           padding: 1px;
           background: radial-gradient(circle 230px at 0% 0%, #ffffff, #0c0d0d);
           position: relative;
-        }
-
-        .dot {
-          width: 5px;
-          aspect-ratio: 1;
-          position: absolute;
-          background-color: #fff;
-          box-shadow: 0 0 10px #ffffff;
-          border-radius: 100px;
-          z-index: 2;
-          right: 10%;
-          top: 10%;
-          animation: moveDot 6s linear infinite;
-        }
-
-        @keyframes moveDot {
-          0%,
-          100% {
-            top: 10%;
-            right: 10%;
-          }
-          25% {
-            top: 10%;
-            right: calc(100% - 35px);
-          }
-          50% {
-            top: calc(100% - 30px);
-            right: calc(100% - 35px);
-          }
-          75% {
-            top: calc(100% - 30px);
-            right: 10%;
-          }
         }
 
         .card {
@@ -274,21 +239,6 @@ export default function Contact() {
           font-size: 1.2rem;
           color: #ccc;
           margin: 0;
-        }
-        
-        .ray {
-          width: 220px;
-          height: 45px;
-          border-radius: 100px;
-          position: absolute;
-          background-color: #c7c7c7;
-          opacity: 0.4;
-          box-shadow: 0 0 50px #fff;
-          filter: blur(10px);
-          transform-origin: 10%;
-          top: 0%;
-          left: 0;
-          transform: rotate(40deg);
         }
 
         .line {

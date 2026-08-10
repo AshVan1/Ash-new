@@ -217,7 +217,7 @@ export default function Home() {
       {/* Portfolio — models centered; Back/Next pinned to bottom with py-6 inset */}
       <section
         id="portfolio"
-        className="relative z-10 min-h-screen container mx-auto px-4 flex flex-col pt-28 pb-12 md:pb-16 lg:pb-20"
+        className="relative z-10 min-h-screen container mx-auto px-4 flex flex-col pt-32 pb-10 md:pb-14 lg:pb-16"
       >
         <div className="flex-1 flex items-center w-full">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 max-w-7xl mx-auto w-full items-center">
@@ -356,9 +356,7 @@ export default function Home() {
       <section id="contact" className="py-64 container mx-auto px-4 relative z-10">
         <div className="flex justify-center items-center pt-24">
           <div className="outer">
-            <div className="dot"></div>
             <div className="card">
-              <div className="ray"></div>
               <div className="contact-content">
                 <div className="contact-item">
                   <div className="icon-container">
@@ -727,39 +725,6 @@ export default function Home() {
           position: relative;
         }
 
-        .dot {
-          width: 5px;
-          aspect-ratio: 1;
-          position: absolute;
-          background-color: #fff;
-          box-shadow: 0 0 10px #ffffff;
-          border-radius: 100px;
-          z-index: 2;
-          right: 10%;
-          top: 10%;
-          animation: moveDot 6s linear infinite;
-        }
-
-        @keyframes moveDot {
-          0%,
-          100% {
-            top: 10%;
-            right: 10%;
-          }
-          25% {
-            top: 10%;
-            right: calc(100% - 35px);
-          }
-          50% {
-            top: calc(100% - 30px);
-            right: calc(100% - 35px);
-          }
-          75% {
-            top: calc(100% - 30px);
-            right: 10%;
-          }
-        }
-
         .card {
           z-index: 1;
           width: 100%;
@@ -822,21 +787,6 @@ export default function Home() {
           font-size: 1.2rem;
           color: #ccc;
           margin: 0;
-        }
-        
-        .ray {
-          width: 220px;
-          height: 45px;
-          border-radius: 100px;
-          position: absolute;
-          background-color: #c7c7c7;
-          opacity: 0.4;
-          box-shadow: 0 0 50px #fff;
-          filter: blur(10px);
-          transform-origin: 10%;
-          top: 0%;
-          left: 0;
-          transform: rotate(40deg);
         }
 
         .line {
