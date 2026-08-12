@@ -1,15 +1,56 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { useState, useEffect } from 'react'
-import ColoredModel from '@/components/ui/ColoredModel'
+import { motion, AnimatePresence } from 'framer-motion'
+import dynamic from 'next/dynamic'
+import { useState, useEffect, useMemo } from 'react'
+import { useDevice } from '@/hooks/useDevice'
+
+const ColoredModel = dynamic(() => import('@/components/ui/ColoredModel'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-full flex items-center justify-center">
+      <div className="w-10 h-10 border-2 border-off-white/30 border-t-off-white rounded-full animate-spin" />
+    </div>
+  ),
+})
+
+const ALL_MODELS = [
+  [
+    { path: "/engine.stl", name: "Engine Model" },
+    { path: "/babylon.stl", name: "Babylon Model" },
+    { path: "/girl ring 01 f (~recovered).stl", name: "Girl Ring" },
+    { path: "/Fixed cross (~recovered).stl", name: "Fixed Cross" }
+  ],
+  [
+    { path: "/Bruno Size 7.75 US FINAL.stl", name: "Bruno Ring" },
+    { path: "/jewelry-model.stl", name: "Jewelry Model" },
+    { path: "/Miles Size 9 US.stl", name: "Miles Ring" },
+    { path: "/A ring.stl", name: "A Ring Model" }
+  ],
+  [
+    { path: "/Isabel (Size 7.5).stl", name: "Isabel Size" },
+    { path: "/notre damn.stl", name: "Notre Damn" },
+    { path: "/Ring (~recovered).stl", name: "Ring Recovered" },
+    { path: "/rng.stl", name: "RNG Model" }
+  ],
+  [
+    { path: "/sfg.stl", name: "SFG Model" },
+    { path: "/Yay.stl", name: "Yay Model" },
+    { path: "/TOS.stl", name: "TOS Model" },
+    { path: "/Untitled.stl", name: "Untitled Model" }
+  ]
+]
+
+const FLAT_MODELS = ALL_MODELS.flat()
 
 export default function Home() {
+  const { isMobile, isReady: isDeviceReady } = useDevice()
   const [selectedColor] = useState<string>("#C0C0C0") // Default silver
-  const [currentPage, setCurrentPage] = useState(0) // Track which 4 models to show
+  const [currentPage, setCurrentPage] = useState(0) // Track which models to show
   const [isLoading, setIsLoading] = useState(true) // Loading state
   const [modelsLoading, setModelsLoading] = useState(true) // 3D models loading state
   const [activeSection, setActiveSection] = useState<string>("portfolio")
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   // All 16 models organized in groups of 4
   const allModels = [
@@ -43,8 +84,20 @@ export default function Home() {
     ]
   ]
 
-  const currentModels = allModels[currentPage]
-  const totalPages = allModels.length
+  const flatModels = useMemo(() => allModels.flat(), [])
+  const modelsPerView = isMobile ? 1 : 4
+  const totalPages = isMobile ? flatModels.length : allModels.length
+  const currentModels = isMobile
+    ? [flatModels[currentPage % flatModels.length]]
+    : allModels[currentPage]
+
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+    setMobileMenuOpen(false)
+  }
 
   const handleViewMore = () => {
     setCurrentPage((prev) => (prev + 1) % totalPages)
@@ -55,6 +108,20 @@ export default function Home() {
     setCurrentPage((prev) => (prev - 1 + totalPages) % totalPages)
     setModelsLoading(true)
   }
+
+  useEffect(() => {
+    if (!isDeviceReady) return
+    setCurrentPage((prev) => Math.min(prev, totalPages - 1))
+  }, [isDeviceReady, isMobile, totalPages])
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [mobileMenuOpen])
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -116,37 +183,28 @@ export default function Home() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="fixed top-0 w-full z-50 py-6"
+        className="fixed top-0 w-full z-50 py-4 md:py-6"
       >
-        <div className="container mx-auto px-6">
+        <div className="container mx-auto px-4 md:px-6">
           <div className="flex justify-between items-center">
             {/* Left side - AD Logo */}
             <motion.div
               whileHover={{ scale: 1.05 }}
               className="relative"
             >
-              <div className="h-16 md:h-20 lg:h-24 w-32 md:w-40 lg:w-48 flex items-center justify-start">
-                <span className="text-off-white text-2xl md:text-3xl lg:text-4xl font-bold tracking-wide hover:text-white transition-colors duration-200 uppercase font-['Oxygen', sans-serif]">
+              <div className="h-12 md:h-20 lg:h-24 w-20 md:w-40 lg:w-48 flex items-center justify-start">
+                <span className="text-off-white text-xl md:text-3xl lg:text-4xl font-bold tracking-wide hover:text-white transition-colors duration-200 uppercase font-['Oxygen', sans-serif]">
                   AD
                 </span>
               </div>
             </motion.div>
 
-            {/* Center - Navigation pills */}
-            <div className="flex space-x-8 items-center ml-8">
+            {/* Desktop navigation */}
+            <div className="hidden md:flex space-x-8 items-center ml-8">
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                 className="cursor-pointer"
-                onClick={() => {
-                  const element = document.getElementById('portfolio')
-                  if (element) {
-                    const offset = window.innerHeight / 2 - element.offsetHeight / 2
-                    element.scrollIntoView({ 
-                      behavior: 'smooth',
-                      block: 'center'
-                    })
-                  }
-                }}
+                onClick={() => scrollToSection('portfolio')}
               >
                 <div className="h-18 w-44 flex items-center justify-center">
                   <span className={`text-xl font-bold tracking-wide transition-colors duration-200 uppercase font-['Oxygen', sans-serif] ${
@@ -161,16 +219,7 @@ export default function Home() {
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 className="cursor-pointer"
-                onClick={() => {
-                  const element = document.getElementById('about')
-                  if (element) {
-                    const offset = window.innerHeight / 2 - element.offsetHeight / 2
-                    element.scrollIntoView({ 
-                      behavior: 'smooth',
-                      block: 'center'
-                    })
-                  }
-                }}
+                onClick={() => scrollToSection('about')}
               >
                 <div className="h-18 w-40 flex items-center justify-center">
                   <span className={`text-xl font-bold tracking-wide transition-colors duration-200 uppercase font-['Oxygen', sans-serif] ${
@@ -185,16 +234,7 @@ export default function Home() {
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 className="cursor-pointer"
-                onClick={() => {
-                  const element = document.getElementById('contact')
-                  if (element) {
-                    const offset = window.innerHeight / 2 - element.offsetHeight / 2
-                    element.scrollIntoView({ 
-                      behavior: 'smooth',
-                      block: 'center'
-                    })
-                  }
-                }}
+                onClick={() => scrollToSection('contact')}
               >
                 <div className="h-18 w-44 flex items-center justify-center">
                   <span className={`text-xl font-bold tracking-wide transition-colors duration-200 uppercase font-['Oxygen', sans-serif] ${
@@ -208,21 +248,64 @@ export default function Home() {
               </motion.div>
             </div>
 
-            {/* Right side - Empty space for balance */}
-            <div className="w-32 md:w-40 lg:w-48"></div>
+            {/* Mobile menu button */}
+            <button
+              type="button"
+              className="md:hidden flex flex-col justify-center items-center w-10 h-10 gap-1.5"
+              aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={mobileMenuOpen}
+              onClick={() => setMobileMenuOpen((open) => !open)}
+            >
+              <span className={`block h-0.5 w-6 bg-off-white transition-transform duration-200 ${mobileMenuOpen ? 'translate-y-2 rotate-45' : ''}`} />
+              <span className={`block h-0.5 w-6 bg-off-white transition-opacity duration-200 ${mobileMenuOpen ? 'opacity-0' : ''}`} />
+              <span className={`block h-0.5 w-6 bg-off-white transition-transform duration-200 ${mobileMenuOpen ? '-translate-y-2 -rotate-45' : ''}`} />
+            </button>
+
+            {/* Right side - Empty space for balance on desktop */}
+            <div className="hidden md:block w-32 md:w-40 lg:w-48"></div>
           </div>
         </div>
+
+        {/* Mobile menu overlay */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2 }}
+              className="md:hidden absolute top-full left-0 right-0 bg-slate-950/95 backdrop-blur-md border-b border-slate-800/50"
+            >
+              <div className="container mx-auto px-4 py-6 flex flex-col gap-4">
+                {(['portfolio', 'about', 'contact'] as const).map((section) => (
+                  <button
+                    key={section}
+                    type="button"
+                    onClick={() => scrollToSection(section)}
+                    className={`text-left text-lg font-bold tracking-wide uppercase font-['Oxygen', sans-serif] py-2 ${
+                      activeSection === section ? 'text-white' : 'text-off-white'
+                    }`}
+                  >
+                    {section}
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.nav>
 
       {/* Portfolio — centered between nav and bottom of viewport */}
       <section
         id="portfolio"
-        className="relative z-10 min-h-screen container mx-auto px-4 flex flex-col justify-center pt-28 pb-10"
+        className="relative z-10 min-h-screen container mx-auto px-4 flex flex-col justify-center pt-20 md:pt-28 pb-10"
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 max-w-7xl mx-auto w-full items-center">
+        <div className={`grid gap-6 md:gap-8 max-w-7xl mx-auto w-full items-center ${
+          isMobile ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
+        }`}>
           {modelsLoading ? (
             <>
-              {[0, 1, 2, 3].map((index) => (
+              {Array.from({ length: modelsPerView }).map((_, index) => (
                 <motion.div
                   key={`loading-${index}`}
                   initial={{ opacity: 0, y: 30 }}
@@ -230,7 +313,9 @@ export default function Home() {
                   transition={{ duration: 0.8, delay: index * 0.1 }}
                   className="group w-full"
                 >
-                  <div className="h-[min(52vh,420px)] flex items-center justify-center relative overflow-hidden w-full">
+                  <div className={`flex items-center justify-center relative overflow-hidden w-full ${
+                    isMobile ? 'h-[min(58vh,480px)]' : 'h-[min(52vh,420px)]'
+                  }`}>
                     <div className="spinner">
                       <span></span>
                       <span></span>
@@ -254,17 +339,25 @@ export default function Home() {
                 transition={{ duration: 0.8, delay: index * 0.1 }}
                 className="group cursor-pointer w-full"
               >
-                <div className="h-[min(52vh,420px)] flex items-center justify-center relative overflow-hidden w-full">
+                <div className={`flex items-center justify-center relative overflow-hidden w-full ${
+                  isMobile ? 'h-[min(58vh,480px)]' : 'h-[min(52vh,420px)]'
+                }`}>
                   <div className="w-full h-full">
                     <ColoredModel 
                       modelPath={model.path}
                       scale={1.2}
-                      rotationSpeed={0.3}
+                      rotationSpeed={isMobile ? 0.2 : 0.3}
                       color={selectedColor}
                       className="w-full h-full"
+                      lowPower={isMobile}
                     />
                   </div>
                 </div>
+                {isMobile && (
+                  <p className="text-center text-off-white/80 text-sm mt-3 font-['Oxygen', sans-serif] uppercase tracking-wide">
+                    {model.name}
+                  </p>
+                )}
               </motion.div>
             ))
           )}
@@ -300,8 +393,8 @@ export default function Home() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-64 container mx-auto px-4 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start pt-32">
+      <section id="about" className="py-24 md:py-64 container mx-auto px-4 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-start pt-16 md:pt-32">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -326,7 +419,7 @@ export default function Home() {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="relative pt-12 flex justify-end"
+            className="relative pt-4 md:pt-12 flex justify-center lg:justify-end"
           >
             <div className="photo-card">
               <div className="photo-container">
@@ -351,8 +444,8 @@ export default function Home() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-64 container mx-auto px-4 relative z-10">
-        <div className="flex justify-center items-center pt-24">
+      <section id="contact" className="py-24 md:py-64 container mx-auto px-4 relative z-10">
+        <div className="flex justify-center items-center pt-12 md:pt-24">
           <div className="outer">
             <div className="dot"></div>
             <div className="card">
@@ -662,8 +755,8 @@ export default function Home() {
         /* Photo Card Styles */
         .photo-card {
           position: relative;
-          width: 500px;
-          height: 400px;
+          width: min(500px, 100%);
+          height: min(400px, 70vw);
           border-radius: 10px;
           overflow: hidden;
           perspective: 1000px;
@@ -714,8 +807,8 @@ export default function Home() {
 
         /* Contact Section Styles */
         .outer {
-          width: 600px;
-          height: 500px;
+          width: min(600px, 100%);
+          height: min(500px, 85vw);
           border-radius: 10px;
           padding: 1px;
           background: radial-gradient(circle 230px at 0% 0%, #ffffff, #0c0d0d);
@@ -784,10 +877,16 @@ export default function Home() {
         .contact-item {
           display: flex;
           align-items: center;
-          gap: 2rem;
+          gap: 1rem;
           padding: 0;
           width: 100%;
           justify-content: center;
+        }
+
+        @media (min-width: 768px) {
+          .contact-item {
+            gap: 2rem;
+          }
         }
         
         .icon-container {
@@ -807,16 +906,29 @@ export default function Home() {
         }
         
         .contact-info h3 {
-          font-size: 1.5rem;
+          font-size: 1.1rem;
           font-weight: bold;
           margin-bottom: 0.5rem;
           color: #fff;
         }
+
+        @media (min-width: 768px) {
+          .contact-info h3 {
+            font-size: 1.5rem;
+          }
+        }
         
         .contact-info p {
-          font-size: 1.2rem;
+          font-size: 0.95rem;
           color: #ccc;
           margin: 0;
+          word-break: break-word;
+        }
+
+        @media (min-width: 768px) {
+          .contact-info p {
+            font-size: 1.2rem;
+          }
         }
         
         .ray {

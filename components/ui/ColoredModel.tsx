@@ -12,6 +12,7 @@ interface ColoredModelProps {
   rotationSpeed?: number
   className?: string
   color?: string
+  lowPower?: boolean
 }
 
 function applyChromeMaterial(root: THREE.Object3D, color: string) {
@@ -168,6 +169,7 @@ export default function ColoredModel({
   rotationSpeed = 0.5,
   className = '',
   color = '#ffffff',
+  lowPower = false,
 }: ColoredModelProps) {
   const [hasError, setHasError] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -184,19 +186,23 @@ export default function ColoredModel({
         <Canvas
           camera={{ position: [0, 0, 5], fov: 50 }}
           style={{ background: 'transparent' }}
-          dpr={[1, 1.5]}
+          dpr={lowPower ? [1, 1] : [1, 1.5]}
           gl={{
-            antialias: true,
+            antialias: !lowPower,
             alpha: true,
-            powerPreference: 'high-performance',
+            powerPreference: lowPower ? 'default' : 'high-performance',
           }}
           onError={() => setHasError(true)}
         >
           <ambientLight intensity={1} />
-          <directionalLight position={[10, 10, 5]} intensity={2} />
-          <pointLight position={[-10, -10, -5]} intensity={0.8} />
-          <pointLight position={[0, 10, 0]} intensity={1.0} />
-          <Environment preset="sunset" />
+          <directionalLight position={[10, 10, 5]} intensity={lowPower ? 1.5 : 2} />
+          {!lowPower && (
+            <>
+              <pointLight position={[-10, -10, -5]} intensity={0.8} />
+              <pointLight position={[0, 10, 0]} intensity={1.0} />
+              <Environment preset="sunset" />
+            </>
+          )}
 
           <Suspense fallback={null}>
             <Model modelPath={modelPath} rotationSpeed={rotationSpeed} color={color} />
