@@ -2,8 +2,9 @@
 
 import { motion, AnimatePresence } from 'framer-motion'
 import dynamic from 'next/dynamic'
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import { useDevice } from '@/hooks/useDevice'
+import MobileContact from '@/components/home/MobileContact'
 
 const ColoredModel = dynamic(() => import('@/components/ui/ColoredModel'), {
   ssr: false,
@@ -44,7 +45,7 @@ const ALL_MODELS = [
 const FLAT_MODELS = ALL_MODELS.flat()
 
 export default function Home() {
-  const { isMobile, isReady: isDeviceReady } = useDevice()
+  const { isMobile } = useDevice()
   const [selectedColor] = useState<string>("#C0C0C0") // Default silver
   const [currentPage, setCurrentPage] = useState(0) // Track which models to show
   const [isLoading, setIsLoading] = useState(true) // Loading state
@@ -52,49 +53,19 @@ export default function Home() {
   const [activeSection, setActiveSection] = useState<string>("portfolio")
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-  // All 16 models organized in groups of 4
-  const allModels = [
-    // Page 0: First 4 models
-    [
-      { path: "/engine.stl", name: "Engine Model" },
-      { path: "/babylon.stl", name: "Babylon Model" },
-      { path: "/girl ring 01 f (~recovered).stl", name: "Girl Ring" },
-      { path: "/Fixed cross (~recovered).stl", name: "Fixed Cross" }
-    ],
-    // Page 1: Next 4 models
-    [
-      { path: "/Bruno Size 7.75 US FINAL.stl", name: "Bruno Ring" },
-      { path: "/jewelry-model.stl", name: "Jewelry Model" },
-      { path: "/Miles Size 9 US.stl", name: "Miles Ring" },
-      { path: "/A ring.stl", name: "A Ring Model" }
-    ],
-    // Page 2: Next 4 models
-    [
-      { path: "/Isabel (Size 7.5).stl", name: "Isabel Size" },
-      { path: "/notre damn.stl", name: "Notre Damn" },
-      { path: "/Ring (~recovered).stl", name: "Ring Recovered" },
-      { path: "/rng.stl", name: "RNG Model" }
-    ],
-    // Page 3: Last 4 models
-    [
-      { path: "/sfg.stl", name: "SFG Model" },
-      { path: "/Yay.stl", name: "Yay Model" },
-      { path: "/TOS.stl", name: "TOS Model" },
-      { path: "/Untitled.stl", name: "Untitled Model" }
-    ]
-  ]
-
-  const flatModels = useMemo(() => allModels.flat(), [])
   const modelsPerView = isMobile ? 1 : 4
-  const totalPages = isMobile ? flatModels.length : allModels.length
+  const totalPages = isMobile ? FLAT_MODELS.length : ALL_MODELS.length
   const currentModels = isMobile
-    ? [flatModels[currentPage % flatModels.length]]
-    : allModels[currentPage]
+    ? [FLAT_MODELS[currentPage % FLAT_MODELS.length]]
+    : ALL_MODELS[currentPage]
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id)
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: isMobile ? 'start' : 'center',
+      })
     }
     setMobileMenuOpen(false)
   }
@@ -110,9 +81,8 @@ export default function Home() {
   }
 
   useEffect(() => {
-    if (!isDeviceReady) return
     setCurrentPage((prev) => Math.min(prev, totalPages - 1))
-  }, [isDeviceReady, isMobile, totalPages])
+  }, [isMobile, totalPages])
 
   useEffect(() => {
     if (!mobileMenuOpen) return
@@ -168,7 +138,7 @@ export default function Home() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-gray-900 to-slate-900">
+    <div className="min-h-screen w-full max-w-[100vw] overflow-x-hidden bg-gradient-to-br from-slate-950 via-gray-900 to-slate-900">
       {/* Loading State */}
       {isLoading && (
         <div className="fixed inset-0 z-50 bg-gradient-to-br from-slate-950 via-gray-900 to-slate-900 flex items-center justify-center">
@@ -183,20 +153,24 @@ export default function Home() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="fixed top-0 w-full z-50 py-4 md:py-6"
+        className="fixed top-0 w-full z-50 py-3 md:py-6 bg-slate-950/80 md:bg-transparent backdrop-blur-md md:backdrop-blur-none border-b border-slate-800/40 md:border-none"
       >
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="flex justify-between items-center">
+        <div className="w-full max-w-7xl mx-auto px-4 md:px-6">
+          <div className="flex justify-between items-center gap-4">
             {/* Left side - AD Logo */}
             <motion.div
               whileHover={{ scale: 1.05 }}
-              className="relative"
+              className="relative shrink-0"
             >
-              <div className="h-12 md:h-20 lg:h-24 w-20 md:w-40 lg:w-48 flex items-center justify-start">
-                <span className="text-off-white text-xl md:text-3xl lg:text-4xl font-bold tracking-wide hover:text-white transition-colors duration-200 uppercase font-['Oxygen', sans-serif]">
+              <button
+                type="button"
+                onClick={() => scrollToSection('portfolio')}
+                className="h-10 md:h-20 lg:h-24 flex items-center justify-start"
+              >
+                <span className="text-off-white text-lg md:text-3xl lg:text-4xl font-bold tracking-wide hover:text-white transition-colors duration-200 uppercase font-['Oxygen', sans-serif]">
                   AD
                 </span>
-              </div>
+              </button>
             </motion.div>
 
             {/* Desktop navigation */}
@@ -251,7 +225,7 @@ export default function Home() {
             {/* Mobile menu button */}
             <button
               type="button"
-              className="md:hidden flex flex-col justify-center items-center w-10 h-10 gap-1.5"
+              className="md:hidden flex flex-col justify-center items-center gap-1.5 w-11 h-11 shrink-0 rounded-lg border border-white/10"
               aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={mobileMenuOpen}
               onClick={() => setMobileMenuOpen((open) => !open)}
@@ -274,16 +248,16 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.2 }}
-              className="md:hidden absolute top-full left-0 right-0 bg-slate-950/95 backdrop-blur-md border-b border-slate-800/50"
+              className="md:hidden fixed inset-x-0 top-[57px] bottom-0 bg-slate-950/98 backdrop-blur-md z-40"
             >
-              <div className="container mx-auto px-4 py-6 flex flex-col gap-4">
+              <div className="px-6 py-8 flex flex-col gap-2 h-full">
                 {(['portfolio', 'about', 'contact'] as const).map((section) => (
                   <button
                     key={section}
                     type="button"
                     onClick={() => scrollToSection(section)}
-                    className={`text-left text-lg font-bold tracking-wide uppercase font-['Oxygen', sans-serif] py-2 ${
-                      activeSection === section ? 'text-white' : 'text-off-white'
+                    className={`text-left text-2xl font-bold tracking-wide uppercase font-['Oxygen', sans-serif] py-4 border-b border-white/10 ${
+                      activeSection === section ? 'text-white' : 'text-off-white/70'
                     }`}
                   >
                     {section}
@@ -295,14 +269,23 @@ export default function Home() {
         </AnimatePresence>
       </motion.nav>
 
-      {/* Portfolio — centered between nav and bottom of viewport */}
+      {/* Portfolio */}
       <section
         id="portfolio"
-        className="relative z-10 min-h-screen container mx-auto px-4 flex flex-col justify-center pt-20 md:pt-28 pb-10"
+        className="relative z-10 w-full min-h-[100dvh] md:min-h-screen max-w-full mx-auto px-4 md:px-6 flex flex-col justify-center pt-[4.5rem] md:pt-28 pb-8 md:pb-10"
       >
-        <div className={`grid gap-6 md:gap-8 max-w-7xl mx-auto w-full items-center ${
-          isMobile ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
-        }`}>
+        <div className="md:hidden text-center mb-4">
+          <p className="text-xs uppercase tracking-[0.35em] text-off-white/50 font-['Oxygen', sans-serif]">
+            Portfolio
+          </p>
+          {!modelsLoading && currentModels[0] && (
+            <h2 className="text-lg text-off-white mt-2 font-['Oxygen', sans-serif] uppercase tracking-wide">
+              {currentModels[0].name}
+            </h2>
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 w-full max-w-7xl mx-auto items-center">
           {modelsLoading ? (
             <>
               {Array.from({ length: modelsPerView }).map((_, index) => (
@@ -313,9 +296,7 @@ export default function Home() {
                   transition={{ duration: 0.8, delay: index * 0.1 }}
                   className="group w-full"
                 >
-                  <div className={`flex items-center justify-center relative overflow-hidden w-full ${
-                    isMobile ? 'h-[min(58vh,480px)]' : 'h-[min(52vh,420px)]'
-                  }`}>
+                  <div className="flex items-center justify-center relative overflow-hidden w-full h-[55dvh] md:h-[min(52vh,420px)]">
                     <div className="spinner">
                       <span></span>
                       <span></span>
@@ -339,9 +320,7 @@ export default function Home() {
                 transition={{ duration: 0.8, delay: index * 0.1 }}
                 className="group cursor-pointer w-full"
               >
-                <div className={`flex items-center justify-center relative overflow-hidden w-full ${
-                  isMobile ? 'h-[min(58vh,480px)]' : 'h-[min(52vh,420px)]'
-                }`}>
+                <div className="flex items-center justify-center relative overflow-hidden w-full h-[55dvh] md:h-[min(52vh,420px)]">
                   <div className="w-full h-full">
                     <ColoredModel 
                       modelPath={model.path}
@@ -353,38 +332,35 @@ export default function Home() {
                     />
                   </div>
                 </div>
-                {isMobile && (
-                  <p className="text-center text-off-white/80 text-sm mt-3 font-['Oxygen', sans-serif] uppercase tracking-wide">
-                    {model.name}
-                  </p>
-                )}
               </motion.div>
             ))
           )}
         </div>
 
         {/* Navigation Controls */}
-        <div className="flex justify-center items-center mt-8 shrink-0">
+        <div className="flex justify-between md:justify-center items-center mt-6 md:mt-8 shrink-0 w-full max-w-sm md:max-w-none mx-auto px-2">
           <button
             onClick={handleViewPrevious}
-            className="custom-nav-button"
+            className="custom-nav-button mobile-nav-button"
+            aria-label="Previous model"
           >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            <p data-text="Back">Back</p>
+            <p data-text="Back" className="hidden sm:block">Back</p>
           </button>
 
-          <div className="text-off-white text-lg font-bold mx-8">
+          <div className="text-off-white text-base md:text-lg font-bold px-4 tabular-nums">
             {currentPage + 1} / {totalPages}
           </div>
 
           <button
             onClick={handleViewMore}
-            className="custom-nav-button"
+            className="custom-nav-button mobile-nav-button"
+            aria-label="Next model"
           >
-            <p data-text="Next">Next</p>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <p data-text="Next" className="hidden sm:block">Next</p>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
@@ -393,19 +369,19 @@ export default function Home() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-24 md:py-64 container mx-auto px-4 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-start pt-16 md:pt-32">
+      <section id="about" className="py-16 md:py-64 w-full max-w-7xl mx-auto px-4 md:px-6 relative z-10">
+        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 md:gap-16 items-start pt-8 md:pt-32">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="pt-16"
+            className="order-2 lg:order-1 w-full"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-8 font-['Helvetica']">
+            <h2 className="text-2xl md:text-4xl font-bold text-white mb-4 md:mb-8 font-['Helvetica']">
               My Journey in Jewelry Design
             </h2>
-            <div className="space-y-6 text-gray-300 leading-relaxed text-xl font-['Helvetica']">
+            <div className="space-y-4 md:space-y-6 text-gray-300 leading-relaxed text-base md:text-xl font-['Helvetica']">
               <p>
                 I began designing jewelry in the 8th grade, carving my first pieces from wax. Since then, jewelry design has been a consistent thread in my life. Over the years, I’ve created custom rings and pendants for both clients and brands, developing a design approach that consistently produces distinctive, memorable pieces.
                 In such a saturated space, my goal is to create jewelry that feels both unique and approachable.
@@ -419,9 +395,9 @@ export default function Home() {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="relative pt-4 md:pt-12 flex justify-center lg:justify-end"
+            className="order-1 lg:order-2 relative w-full flex justify-center lg:justify-end"
           >
-            <div className="photo-card">
+            <div className="photo-card w-full">
               <div className="photo-container">
                 <img 
                   src="/IMG_7367.jpeg" 
@@ -444,8 +420,12 @@ export default function Home() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-24 md:py-64 container mx-auto px-4 relative z-10">
-        <div className="flex justify-center items-center pt-12 md:pt-24">
+      <section id="contact" className="py-16 md:py-64 w-full max-w-7xl mx-auto px-4 md:px-6 relative z-10 scroll-mt-20">
+        <div className="md:hidden pt-4">
+          <MobileContact />
+        </div>
+
+        <div className="hidden md:flex justify-center items-center pt-12 md:pt-24">
           <div className="outer">
             <div className="dot"></div>
             <div className="card">
@@ -505,13 +485,13 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 border-t border-slate-800/50 relative z-10">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="text-gray-400 mb-4 md:mb-0">
+      <footer className="py-8 md:py-12 border-t border-slate-800/50 relative z-10">
+        <div className="w-full max-w-7xl mx-auto px-4 md:px-6">
+          <div className="flex flex-col items-center text-center md:flex-row md:justify-between md:items-center md:text-left gap-4">
+            <div className="text-gray-400 text-sm md:text-base">
               <div>© 2025 Asher Delman. All rights reserved.</div>
-              <div className="flex items-center gap-2 mt-1 text-gray-400">
-                <span>Website developed and designed by Oscar Salerno</span>
+              <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-1 sm:gap-2 mt-2 text-gray-400">
+                <span className="max-w-xs sm:max-w-none">Website developed and designed by Oscar Salerno</span>
                 <a href="mailto:osalerno@Browning.edu" className="hover:text-white" title="Email Oscar" style={{fontSize: '1rem', display: 'flex', alignItems: 'center'}}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M22 6L12 13L2 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                 </a>
@@ -616,7 +596,7 @@ export default function Home() {
 
         /* Custom Navigation Buttons */
         .custom-nav-button {
-          --primary-color: #000000;
+          --primary-color: #FAF9F6;
           --hovered-color: #FFFFFF;
           position: relative;
           display: flex;
@@ -624,13 +604,38 @@ export default function Home() {
           font-size: 20px;
           gap: 0.5rem;
           align-items: center;
+          min-height: 44px;
+          min-width: 44px;
+          padding: 0.5rem;
+        }
+
+        .mobile-nav-button {
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          border-radius: 9999px;
+          padding: 0.65rem 1rem;
+          background: rgba(255, 255, 255, 0.04);
+        }
+
+        @media (min-width: 768px) {
+          .mobile-nav-button {
+            border: none;
+            border-radius: 0;
+            padding: 0.5rem;
+            background: transparent;
+          }
         }
 
         .custom-nav-button p {
           margin: 0;
           position: relative;
-          font-size: 20px;
+          font-size: 16px;
           color: var(--primary-color);
+        }
+
+        @media (min-width: 768px) {
+          .custom-nav-button p {
+            font-size: 20px;
+          }
         }
 
         .custom-nav-button::after {
@@ -684,7 +689,13 @@ export default function Home() {
           justify-content: center;
           align-items: center;
           border-radius: 50%;
-          margin-left: -75px;
+          margin-left: 0;
+        }
+
+        @media (min-width: 768px) {
+          .spinner {
+            margin-left: -75px;
+          }
         }
 
         .spinner span {
@@ -755,16 +766,30 @@ export default function Home() {
         /* Photo Card Styles */
         .photo-card {
           position: relative;
-          width: min(500px, 100%);
-          height: min(400px, 70vw);
+          width: 100%;
+          max-width: 500px;
+          aspect-ratio: 4 / 3;
           border-radius: 10px;
           overflow: hidden;
           perspective: 1000px;
           transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
+        @media (min-width: 768px) {
+          .photo-card {
+            height: min(400px, 70vw);
+            aspect-ratio: auto;
+          }
+        }
+
         .photo-card:hover {
-          transform: scale(1.05);
+          transform: scale(1.02);
+        }
+
+        @media (min-width: 768px) {
+          .photo-card:hover {
+            transform: scale(1.05);
+          }
         }
 
         .photo-container {
