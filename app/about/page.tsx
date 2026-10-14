@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react'
 import ChromeSignature3D from '@/components/ui/ChromeSignature3D'
 import { SparkleParticles } from '@/components/ui/SparkleParticles'
 import BlurText from '@/components/ui/BlurText'
+import MobileNav from '@/components/ui/MobileNav'
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -79,7 +80,7 @@ export default function About() {
             </Link>
 
             {/* Center - Navigation pills */}
-            <div className="flex space-x-8 items-center ml-8">
+            <div className="hidden xl:flex space-x-8 items-center ml-8">
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                 className="cursor-pointer"
@@ -117,20 +118,27 @@ export default function About() {
             </div>
 
             {/* Right side - Empty space for balance */}
-            <div className="w-32 md:w-40 lg:w-48"></div>
+            <div className="hidden xl:block w-32 md:w-40 lg:w-48"></div>
+            <MobileNav
+              items={[
+                { label: 'Portfolio', href: '/' },
+                { label: 'About', href: '/about', active: true },
+                { label: 'Contact', href: '/contact' },
+              ]}
+            />
           </div>
         </div>
       </motion.nav>
 
       {/* About Content */}
       <section className="pt-32 pb-16 container mx-auto px-4 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start pt-24">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-start pt-8 md:pt-24">
           <motion.div
             variants={fadeInUp}
             initial="initial"
             whileInView="animate"
             viewport={{ once: true }}
-            className="pt-16 lg:col-span-1"
+            className="min-w-0 pt-4 md:pt-16 lg:col-span-1"
           >
             <BlurText 
               text="My Journey in Jewelry Design" 
@@ -161,7 +169,7 @@ export default function About() {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="relative pt-4 flex justify-end items-center lg:col-span-1"
+            className="relative min-w-0 w-full pt-4 flex justify-center lg:justify-end items-center lg:col-span-1"
           >
             <div className="photo-card">
               <div className="photo-container">
@@ -187,8 +195,10 @@ export default function About() {
 
       <style jsx>{`
         .photo-card {
-          width: 500px;
-          height: 400px;
+          position: relative;
+          width: 100%;
+          max-width: 500px;
+          aspect-ratio: 5 / 4;
           border-radius: 10px;
           overflow: hidden;
           perspective: 1000px;

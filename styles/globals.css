@@ -122,6 +122,11 @@ body {
   overflow-x: hidden;
 }
 
+img,
+canvas {
+  max-width: 100%;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 0px;

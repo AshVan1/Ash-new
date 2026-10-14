@@ -3,6 +3,8 @@
 import { motion } from 'framer-motion'
 import { useState, useEffect } from 'react'
 import ColoredModel from '@/components/ui/ColoredModel'
+import MobileNav from '@/components/ui/MobileNav'
+import ContactBlock from '@/components/ui/ContactBlock'
 
 export default function Home() {
   const [selectedColor] = useState<string>("#C0C0C0") // Default silver
@@ -133,7 +135,7 @@ export default function Home() {
             </motion.div>
 
             {/* Center - Navigation pills */}
-            <div className="flex space-x-8 items-center ml-8">
+            <div className="hidden xl:flex space-x-8 items-center ml-8">
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                 className="cursor-pointer"
@@ -209,7 +211,41 @@ export default function Home() {
             </div>
 
             {/* Right side - Empty space for balance */}
-            <div className="w-32 md:w-40 lg:w-48"></div>
+            <div className="hidden xl:block w-32 md:w-40 lg:w-48"></div>
+            <MobileNav
+              items={[
+                {
+                  label: 'Portfolio',
+                  active: activeSection === 'portfolio',
+                  onClick: () => {
+                    const element = document.getElementById('portfolio')
+                    if (!element) return
+                    const top = element.getBoundingClientRect().top + window.scrollY - 96
+                    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
+                  },
+                },
+                {
+                  label: 'About',
+                  active: activeSection === 'about',
+                  onClick: () => {
+                    const element = document.getElementById('about')
+                    if (!element) return
+                    const top = element.getBoundingClientRect().top + window.scrollY - 96
+                    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
+                  },
+                },
+                {
+                  label: 'Contact',
+                  active: activeSection === 'contact',
+                  onClick: () => {
+                    const element = document.getElementById('contact')
+                    if (!element) return
+                    const top = element.getBoundingClientRect().top + window.scrollY - 96
+                    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
+                  },
+                },
+              ]}
+            />
           </div>
         </div>
       </motion.nav>
@@ -300,14 +336,14 @@ export default function Home() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-64 container mx-auto px-4 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start pt-32">
+      <section id="about" className="py-20 md:py-64 container mx-auto px-4 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-start pt-10 md:pt-32">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="pt-16"
+            className="min-w-0 pt-0 md:pt-16"
           >
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-8 font-['Helvetica']">
               My Journey in Jewelry Design
@@ -326,7 +362,7 @@ export default function Home() {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="relative pt-12 flex justify-end"
+            className="relative min-w-0 w-full pt-4 md:pt-12 flex justify-center lg:justify-end"
           >
             <div className="photo-card">
               <div className="photo-container">
@@ -351,63 +387,9 @@ export default function Home() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-64 container mx-auto px-4 relative z-10">
-        <div className="flex justify-center items-center pt-24">
-          <div className="outer">
-            <div className="dot"></div>
-            <div className="card">
-              <div className="ray"></div>
-              <div className="contact-content">
-                <div className="contact-item">
-                  <div className="icon-container">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      <path d="M22 6L12 13L2 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </div>
-                  <div className="contact-info">
-                    <h3>Email</h3>
-                    <p>asherdelman@gmail.com</p>
-                  </div>
-                </div>
-                
-                <div className="contact-item">
-                  <div className="icon-container">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M22 16.92V19.92C22.0011 20.1985 21.9441 20.4742 21.8325 20.7294C21.7209 20.9846 21.5573 21.2136 21.3521 21.4019C21.1469 21.5902 20.9046 21.7335 20.6407 21.8227C20.3769 21.9119 20.0974 21.9452 19.82 21.92C16.7428 21.5856 13.787 20.5341 11.19 18.85C8.77382 17.3146 6.72533 15.2661 5.18999 12.85C3.49997 10.2412 2.44824 7.27099 2.11999 4.18C2.09477 3.90347 2.12787 3.62476 2.21649 3.36162C2.30512 3.09849 2.44756 2.85669 2.63476 2.6518C2.82196 2.44691 3.04971 2.28331 3.30351 2.17137C3.55731 2.05943 3.83172 2.00177 4.10999 2H7.10999C7.59522 1.99522 8.06569 2.16708 8.43373 2.48353C8.80177 2.79999 9.04201 3.23945 9.10999 3.72C9.23662 4.68007 9.47144 5.62273 9.80999 6.53C9.94454 6.88792 9.9736 7.27675 9.89418 7.6495C9.81476 8.02225 9.63037 8.36326 9.35999 8.63L8.08999 9.9C9.51355 12.4136 11.5864 14.4865 14.1 15.91L15.37 14.64C15.6367 14.3696 15.9778 14.1852 16.3505 14.1058C16.7233 14.0264 17.1121 14.0554 17.47 14.19C18.3773 14.5286 19.3199 14.7635 20.28 14.89C20.7658 14.9585 21.2094 15.2032 21.5265 15.5775C21.8437 15.9518 22.0099 16.4296 22 16.92Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </div>
-                  <div className="contact-info">
-                    <h3>Phone</h3>
-                    <p>323-823-7888</p>
-                  </div>
-                </div>
-                
-                <div className="contact-item">
-                  <div className="icon-container">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" fill="currentColor"/>
-                    </svg>
-                  </div>
-                  <div className="contact-info">
-                    <h3>LinkedIn</h3>
-                    <a 
-                      href="https://www.linkedin.com/in/asher-delman" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="hover:text-white transition-colors duration-200"
-                    >
-                      linkedin.com/in/asher-delman
-                    </a>
-                  </div>
-                </div>
-              </div>
-              <div className="line topl"></div>
-              <div className="line bottoml"></div>
-              <div className="line leftl"></div>
-              <div className="line rightl"></div>
-            </div>
-          </div>
+      <section id="contact" className="py-20 md:py-64 container mx-auto px-4 relative z-10">
+        <div className="pt-10 md:pt-32">
+          <ContactBlock />
         </div>
       </section>
 
@@ -417,18 +399,18 @@ export default function Home() {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="text-gray-400 mb-4 md:mb-0">
               <div>© 2025 Asher Delman. All rights reserved.</div>
-              <div className="flex items-center gap-2 mt-1 text-gray-400">
+              <div className="flex max-w-full flex-wrap items-center gap-x-2 gap-y-1 mt-1 text-gray-400">
                 <span>Website developed and designed by Oscar Salerno</span>
-                <a href="mailto:osalerno@Browning.edu" className="hover:text-white" title="Email Oscar" style={{fontSize: '1rem', display: 'flex', alignItems: 'center'}}>
+                <a href="mailto:osalerno@Browning.edu" className="hover:text-white inline-flex items-center justify-center p-3 -m-3 md:p-0 md:m-0" title="Email Oscar" style={{fontSize: '1rem', display: 'flex', alignItems: 'center'}}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M22 6L12 13L2 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                 </a>
-                <a href="https://www.linkedin.com/in/oscar-salerno-406423341/" className="hover:text-white" title="Oscar's LinkedIn" target="_blank" rel="noopener noreferrer" style={{fontSize: '1rem', display: 'flex', alignItems: 'center'}}>
+                <a href="https://www.linkedin.com/in/oscar-salerno-406423341/" className="hover:text-white inline-flex items-center justify-center p-3 -m-3 md:p-0 md:m-0" title="Oscar's LinkedIn" target="_blank" rel="noopener noreferrer" style={{fontSize: '1rem', display: 'flex', alignItems: 'center'}}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" fill="currentColor"/></svg>
                 </a>
               </div>
             </div>
             <div className="flex space-x-6">
-              <a href="https://www.instagram.com/oscarasalerno/?next=%2F" className="text-gray-400 hover:text-white transition-colors duration-200" target="_blank" rel="noopener noreferrer">Instagram</a>
+              <a href="https://www.instagram.com/oscarasalerno/?next=%2F" className="inline-flex items-center py-3 text-gray-400 hover:text-white transition-colors duration-200 md:py-0" target="_blank" rel="noopener noreferrer">Instagram</a>
             </div>
           </div>
         </div>
@@ -662,8 +644,9 @@ export default function Home() {
         /* Photo Card Styles */
         .photo-card {
           position: relative;
-          width: 500px;
-          height: 400px;
+          width: 100%;
+          max-width: 500px;
+          aspect-ratio: 5 / 4;
           border-radius: 10px;
           overflow: hidden;
           perspective: 1000px;
@@ -712,151 +695,12 @@ export default function Home() {
           transform: rotateY(0deg);
         }
 
-        /* Contact Section Styles */
-        .outer {
-          width: 600px;
-          height: 500px;
-          border-radius: 10px;
-          padding: 1px;
-          background: radial-gradient(circle 230px at 0% 0%, #ffffff, #0c0d0d);
-          position: relative;
-        }
-
-        .dot {
-          width: 5px;
-          aspect-ratio: 1;
-          position: absolute;
-          background-color: #fff;
-          box-shadow: 0 0 10px #ffffff;
-          border-radius: 100px;
-          z-index: 2;
-          right: 10%;
-          top: 10%;
-          animation: moveDot 6s linear infinite;
-        }
-
-        @keyframes moveDot {
-          0%,
-          100% {
-            top: 10%;
-            right: 10%;
+        @media (max-width: 720px) {
+          .custom-nav-button {
+            --primary-color: #faf9f6;
+            min-height: 44px;
+            padding: 0.65rem 0.35rem;
           }
-          25% {
-            top: 10%;
-            right: calc(100% - 35px);
-          }
-          50% {
-            top: calc(100% - 30px);
-            right: calc(100% - 35px);
-          }
-          75% {
-            top: calc(100% - 30px);
-            right: 10%;
-          }
-        }
-
-        .card {
-          z-index: 1;
-          width: 100%;
-          height: 100%;
-          border-radius: 9px;
-          border: solid 1px #202222;
-          background-size: 20px 20px;
-          background: radial-gradient(circle 280px at 0% 0%, #444444, #0c0d0d);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          position: relative;
-          flex-direction: column;
-          color: #fff;
-        }
-        
-        .contact-content {
-          display: flex;
-          flex-direction: column;
-          gap: 3rem;
-          width: 80%;
-          z-index: 3;
-          align-items: center;
-          justify-content: center;
-        }
-        
-        .contact-item {
-          display: flex;
-          align-items: center;
-          gap: 2rem;
-          padding: 0;
-          width: 100%;
-          justify-content: center;
-        }
-        
-        .icon-container {
-          width: 60px;
-          height: 60px;
-          background: rgba(255, 255, 255, 0.1);
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: #fff;
-          flex-shrink: 0;
-        }
-        
-        .contact-info {
-          flex: 1;
-        }
-        
-        .contact-info h3 {
-          font-size: 1.5rem;
-          font-weight: bold;
-          margin-bottom: 0.5rem;
-          color: #fff;
-        }
-        
-        .contact-info p {
-          font-size: 1.2rem;
-          color: #ccc;
-          margin: 0;
-        }
-        
-        .ray {
-          width: 220px;
-          height: 45px;
-          border-radius: 100px;
-          position: absolute;
-          background-color: #c7c7c7;
-          opacity: 0.4;
-          box-shadow: 0 0 50px #fff;
-          filter: blur(10px);
-          transform-origin: 10%;
-          top: 0%;
-          left: 0;
-          transform: rotate(40deg);
-        }
-
-        .line {
-          width: 100%;
-          height: 1px;
-          position: absolute;
-          background-color: #2c2c2c;
-        }
-        .topl {
-          top: 10%;
-          background: linear-gradient(90deg, #888888 30%, #1d1f1f 70%);
-        }
-        .bottoml {
-          bottom: 10%;
-        }
-        .leftl {
-          left: 10%;
-          width: 1px;
-          height: 100%;
-          background: linear-gradient(180deg, #747474 30%, #222424 70%);
-        }
-        .rightl {
-          right: 10%;
-          width: 1px;
-          height: 100%;
         }
       `}</style>
     </div>
