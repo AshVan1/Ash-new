@@ -5,6 +5,7 @@ import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import ColoredModel from '@/components/ui/ColoredModel'
 import ChromeSignature3D from '@/components/ui/ChromeSignature3D'
+import MobileNav from '@/components/ui/MobileNav'
 
 const portfolioItems = [
   {
@@ -129,18 +130,23 @@ export default function Portfolio() {
                 className="relative cursor-pointer"
               >
                 <div className="h-16 md:h-20 lg:h-24 w-32 md:w-40 lg:w-48">
-                  <ChromeSignature3D 
-                    text="Asher Delman"
-                    size={0.7}
-                    height={0.08}
-                    className="w-full h-full"
-                  />
+                  <span className="xl:hidden flex h-full items-center text-white text-2xl md:text-3xl font-bold tracking-wide uppercase">
+                    AD
+                  </span>
+                  <div className="hidden xl:block w-full h-full">
+                    <ChromeSignature3D 
+                      text="Asher Delman"
+                      size={0.7}
+                      height={0.08}
+                      className="w-full h-full"
+                    />
+                  </div>
                 </div>
               </motion.div>
             </Link>
 
             {/* Center - Navigation pills */}
-            <div className="flex space-x-8 items-center ml-8">
+            <div className="hidden xl:flex space-x-8 items-center ml-8">
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                 className="cursor-pointer"
@@ -194,7 +200,14 @@ export default function Portfolio() {
             </div>
 
             {/* Right side - Empty space for balance */}
-            <div className="w-32 md:w-40 lg:w-48"></div>
+            <div className="hidden xl:block w-32 md:w-40 lg:w-48"></div>
+            <MobileNav
+              items={[
+                { label: 'Portfolio', href: '/', active: true },
+                { label: 'About', href: '/about' },
+                { label: 'Contact', href: '/contact' },
+              ]}
+            />
           </div>
         </div>
       </motion.nav>
@@ -207,10 +220,10 @@ export default function Portfolio() {
           transition={{ duration: 0.8 }}
           className="text-center"
         >
-          <h1 className="text-6xl md:text-8xl font-bold text-white mb-6 bg-gradient-to-r from-silver-400 via-gray-500 to-silver-600 bg-clip-text text-transparent">
+          <h1 className="text-4xl sm:text-6xl md:text-8xl font-bold text-white mb-6 bg-gradient-to-r from-silver-400 via-gray-500 to-silver-600 bg-clip-text text-transparent">
             Portfolio
           </h1>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed">
+          <p className="text-gray-400 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed px-2">
             A curated selection of designs showcasing versatility and attention to detail
           </p>
         </motion.div>
@@ -224,8 +237,8 @@ export default function Portfolio() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="flex justify-center"
         >
-          <div className="flex flex-wrap gap-4 justify-center items-center bg-slate-900/50 backdrop-blur-md rounded-full p-4 border border-slate-700/30">
-            <span className="text-gray-300 font-medium px-4">Filter by Type:</span>
+          <div className="flex w-full max-w-full flex-wrap gap-3 sm:gap-4 justify-center items-center bg-slate-900/50 backdrop-blur-md rounded-3xl sm:rounded-full p-3 sm:p-4 border border-slate-700/30">
+            <span className="basis-full sm:basis-auto text-center text-gray-300 font-medium px-4">Filter by Type:</span>
             {types.map((type) => (
               <motion.button
                 key={type}
@@ -325,7 +338,7 @@ export default function Portfolio() {
             initial={{ scale: 0.9, opacity: 0, rotateY: -15 }}
             animate={{ scale: 1, opacity: 1, rotateY: 0 }}
             exit={{ scale: 0.9, opacity: 0, rotateY: 15 }}
-            className="bg-white rounded-3xl p-8 max-w-6xl w-full max-h-[90vh] overflow-y-auto border border-gray-200 shadow-2xl"
+            className="bg-white rounded-3xl p-5 sm:p-8 max-w-6xl w-full min-w-0 max-h-[90vh] overflow-y-auto border border-gray-200 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             {(() => {
@@ -334,14 +347,14 @@ export default function Portfolio() {
               
               return (
                 <>
-                  <div className="flex justify-between items-start mb-8">
-                    <div>
-                      <h2 className="text-4xl font-bold text-black mb-3">{item.title}</h2>
+                  <div className="flex justify-between items-start gap-4 mb-8">
+                    <div className="min-w-0">
+                      <h2 className="text-3xl sm:text-4xl font-bold text-black mb-3 break-words">{item.title}</h2>
                       <div className="text-gray-600 font-medium bg-gray-100 px-4 py-2 rounded-full inline-block">{item.type}</div>
                     </div>
                     <button
                       onClick={() => setSelectedItem(null)}
-                      className="text-gray-500 hover:text-black text-3xl bg-gray-100 rounded-full w-10 h-10 flex items-center justify-center hover:bg-gray-200 transition-all duration-300"
+                      className="text-gray-500 hover:text-black text-3xl bg-gray-100 rounded-full w-11 h-11 sm:w-10 sm:h-10 shrink-0 flex items-center justify-center hover:bg-gray-200 transition-all duration-300"
                     >
                       ×
                     </button>
@@ -397,7 +410,7 @@ export default function Portfolio() {
                         </div>
                       </div>
                       
-                      <div className="flex gap-4 pt-6">
+                      <div className="flex flex-col sm:flex-row gap-4 pt-6">
                         <button className="bg-gray-800 text-white font-bold py-4 px-8 rounded-full hover:bg-gray-900 transition-all duration-300 flex-1">
                           Inquire About Piece
                         </button>
@@ -499,6 +512,19 @@ export default function Portfolio() {
           box-shadow:
             0 0 18px rgba(160, 216, 255, 0.5),
             0 0 10px rgba(200, 240, 255, 0.4) inset;
+        }
+
+        @media (max-width: 639px) {
+          .glass-radio-group {
+            width: 100%;
+            max-width: 100%;
+          }
+
+          .glass-radio-group label {
+            min-width: 0;
+            padding: 0.75rem 0.35rem;
+            font-size: 0.875rem;
+          }
         }
       `}</style>
     </div>

@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { useState, useEffect } from 'react'
 import ColoredModel from '@/components/ui/ColoredModel'
+import MobileNav from '@/components/ui/MobileNav'
 
 export default function Home() {
   const [selectedColor] = useState<string>("#C0C0C0") // Default silver
@@ -133,7 +134,7 @@ export default function Home() {
             </motion.div>
 
             {/* Center - Navigation pills */}
-            <div className="flex space-x-8 items-center ml-8">
+            <div className="hidden xl:flex space-x-8 items-center ml-8">
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                 className="cursor-pointer"
@@ -209,7 +210,41 @@ export default function Home() {
             </div>
 
             {/* Right side - Empty space for balance */}
-            <div className="w-32 md:w-40 lg:w-48"></div>
+            <div className="hidden xl:block w-32 md:w-40 lg:w-48"></div>
+            <MobileNav
+              items={[
+                {
+                  label: 'Portfolio',
+                  active: activeSection === 'portfolio',
+                  onClick: () => {
+                    const element = document.getElementById('portfolio')
+                    if (!element) return
+                    const top = element.getBoundingClientRect().top + window.scrollY - 96
+                    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
+                  },
+                },
+                {
+                  label: 'About',
+                  active: activeSection === 'about',
+                  onClick: () => {
+                    const element = document.getElementById('about')
+                    if (!element) return
+                    const top = element.getBoundingClientRect().top + window.scrollY - 96
+                    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
+                  },
+                },
+                {
+                  label: 'Contact',
+                  active: activeSection === 'contact',
+                  onClick: () => {
+                    const element = document.getElementById('contact')
+                    if (!element) return
+                    const top = element.getBoundingClientRect().top + window.scrollY - 96
+                    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
+                  },
+                },
+              ]}
+            />
           </div>
         </div>
       </motion.nav>
@@ -300,14 +335,14 @@ export default function Home() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-64 container mx-auto px-4 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start pt-32">
+      <section id="about" className="py-20 md:py-64 container mx-auto px-4 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-start pt-10 md:pt-32">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="pt-16"
+            className="min-w-0 pt-0 md:pt-16"
           >
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-8 font-['Helvetica']">
               My Journey in Jewelry Design
@@ -326,7 +361,7 @@ export default function Home() {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="relative pt-12 flex justify-end"
+            className="relative min-w-0 w-full pt-4 md:pt-12 flex justify-center lg:justify-end"
           >
             <div className="photo-card">
               <div className="photo-container">
@@ -351,8 +386,8 @@ export default function Home() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-64 container mx-auto px-4 relative z-10">
-        <div className="flex justify-center items-center pt-24">
+      <section id="contact" className="py-20 md:py-64 container mx-auto px-4 relative z-10">
+        <div className="flex w-full min-w-0 justify-center items-center pt-8 md:pt-24">
           <div className="outer">
             <div className="dot"></div>
             <div className="card">
@@ -367,7 +402,7 @@ export default function Home() {
                   </div>
                   <div className="contact-info">
                     <h3>Email</h3>
-                    <p>asherdelman@gmail.com</p>
+                    <p><a href="mailto:asherdelman@gmail.com">asherdelman@gmail.com</a></p>
                   </div>
                 </div>
                 
@@ -379,7 +414,7 @@ export default function Home() {
                   </div>
                   <div className="contact-info">
                     <h3>Phone</h3>
-                    <p>323-823-7888</p>
+                    <p><a href="tel:+13238237888">323-823-7888</a></p>
                   </div>
                 </div>
                 
@@ -417,18 +452,18 @@ export default function Home() {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="text-gray-400 mb-4 md:mb-0">
               <div>© 2025 Asher Delman. All rights reserved.</div>
-              <div className="flex items-center gap-2 mt-1 text-gray-400">
+              <div className="flex max-w-full flex-wrap items-center gap-x-2 gap-y-1 mt-1 text-gray-400">
                 <span>Website developed and designed by Oscar Salerno</span>
-                <a href="mailto:osalerno@Browning.edu" className="hover:text-white" title="Email Oscar" style={{fontSize: '1rem', display: 'flex', alignItems: 'center'}}>
+                <a href="mailto:osalerno@Browning.edu" className="hover:text-white inline-flex items-center justify-center p-3 -m-3 md:p-0 md:m-0" title="Email Oscar" style={{fontSize: '1rem', display: 'flex', alignItems: 'center'}}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M22 6L12 13L2 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                 </a>
-                <a href="https://www.linkedin.com/in/oscar-salerno-406423341/" className="hover:text-white" title="Oscar's LinkedIn" target="_blank" rel="noopener noreferrer" style={{fontSize: '1rem', display: 'flex', alignItems: 'center'}}>
+                <a href="https://www.linkedin.com/in/oscar-salerno-406423341/" className="hover:text-white inline-flex items-center justify-center p-3 -m-3 md:p-0 md:m-0" title="Oscar's LinkedIn" target="_blank" rel="noopener noreferrer" style={{fontSize: '1rem', display: 'flex', alignItems: 'center'}}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" fill="currentColor"/></svg>
                 </a>
               </div>
             </div>
             <div className="flex space-x-6">
-              <a href="https://www.instagram.com/oscarasalerno/?next=%2F" className="text-gray-400 hover:text-white transition-colors duration-200" target="_blank" rel="noopener noreferrer">Instagram</a>
+              <a href="https://www.instagram.com/oscarasalerno/?next=%2F" className="inline-flex items-center py-3 text-gray-400 hover:text-white transition-colors duration-200 md:py-0" target="_blank" rel="noopener noreferrer">Instagram</a>
             </div>
           </div>
         </div>
@@ -662,8 +697,9 @@ export default function Home() {
         /* Photo Card Styles */
         .photo-card {
           position: relative;
-          width: 500px;
-          height: 400px;
+          width: 100%;
+          max-width: 500px;
+          aspect-ratio: 5 / 4;
           border-radius: 10px;
           overflow: hidden;
           perspective: 1000px;
@@ -813,10 +849,16 @@ export default function Home() {
           color: #fff;
         }
         
-        .contact-info p {
+        .contact-info p,
+        .contact-info a {
           font-size: 1.2rem;
           color: #ccc;
           margin: 0;
+          text-decoration: none;
+        }
+
+        .contact-info a:hover {
+          color: #fff;
         }
         
         .ray {
@@ -857,6 +899,62 @@ export default function Home() {
           right: 10%;
           width: 1px;
           height: 100%;
+        }
+
+        @media (max-width: 720px) {
+          .outer {
+            width: 100%;
+            max-width: 600px;
+            min-width: 0;
+            height: auto;
+            overflow: hidden;
+          }
+
+          .card {
+            height: auto;
+            min-height: 0;
+            padding: 2.75rem 1.15rem;
+          }
+
+          .contact-content {
+            width: 100%;
+            gap: 1.75rem;
+          }
+
+          .contact-item {
+            gap: 1rem;
+          }
+
+          .contact-info {
+            min-width: 0;
+          }
+
+          .icon-container {
+            width: 48px;
+            height: 48px;
+          }
+
+          .contact-info h3 {
+            font-size: 1.25rem;
+          }
+
+          .contact-info p,
+          .contact-info a {
+            font-size: 1.05rem;
+            line-height: 1.45;
+            overflow-wrap: anywhere;
+          }
+
+          .contact-info a {
+            display: inline-block;
+            padding: 0.65rem 0;
+          }
+
+          .custom-nav-button {
+            --primary-color: #faf9f6;
+            min-height: 44px;
+            padding: 0.65rem 0.35rem;
+          }
         }
       `}</style>
     </div>

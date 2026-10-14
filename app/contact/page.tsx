@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import ChromeSignature3D from '@/components/ui/ChromeSignature3D'
 import { SparkleParticles } from '@/components/ui/SparkleParticles'
+import MobileNav from '@/components/ui/MobileNav'
 
 export default function Contact() {
   const [isLoading, setIsLoading] = useState(true)
@@ -72,7 +73,7 @@ export default function Contact() {
             </Link>
 
             {/* Center - Navigation pills */}
-            <div className="flex space-x-8 items-center ml-8">
+            <div className="hidden xl:flex space-x-8 items-center ml-8">
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                 className="cursor-pointer"
@@ -110,7 +111,14 @@ export default function Contact() {
             </div>
 
             {/* Right side - Empty space for balance */}
-            <div className="w-32 md:w-40 lg:w-48"></div>
+            <div className="hidden xl:block w-32 md:w-40 lg:w-48"></div>
+            <MobileNav
+              items={[
+                { label: 'Portfolio', href: '/' },
+                { label: 'About', href: '/about' },
+                { label: 'Contact', href: '/contact', active: true },
+              ]}
+            />
           </div>
         </div>
       </motion.nav>
@@ -121,7 +129,7 @@ export default function Contact() {
 
       {/* Animated Card Section */}
       <section className="py-16 container mx-auto px-4 relative z-10">
-        <div className="flex justify-center items-center pt-16">
+        <div className="flex w-full min-w-0 justify-center items-center pt-8 md:pt-16">
           <div className="outer">
             <div className="dot"></div>
             <div className="card">
@@ -136,7 +144,7 @@ export default function Contact() {
                   </div>
                   <div className="contact-info">
                     <h3>Email</h3>
-                    <p>jewelry.designer@example.com</p>
+                    <p><a href="mailto:jewelry.designer@example.com">jewelry.designer@example.com</a></p>
                   </div>
                 </div>
                 
@@ -148,7 +156,7 @@ export default function Contact() {
                   </div>
                   <div className="contact-info">
                     <h3>Phone</h3>
-                    <p>+1 (555) 123-4567</p>
+                    <p><a href="tel:+15551234567">+1 (555) 123-4567</a></p>
                   </div>
                 </div>
                 
@@ -270,10 +278,16 @@ export default function Contact() {
           color: #fff;
         }
         
-        .contact-info p {
+        .contact-info p,
+        .contact-info a {
           font-size: 1.2rem;
           color: #ccc;
           margin: 0;
+          text-decoration: none;
+        }
+
+        .contact-info a:hover {
+          color: #fff;
         }
         
         .ray {
@@ -314,6 +328,56 @@ export default function Contact() {
           right: 10%;
           width: 1px;
           height: 100%;
+        }
+
+        @media (max-width: 720px) {
+          .outer {
+            width: 100%;
+            max-width: 600px;
+            min-width: 0;
+            height: auto;
+            overflow: hidden;
+          }
+
+          .card {
+            height: auto;
+            min-height: 0;
+            padding: 2.75rem 1.15rem;
+          }
+
+          .contact-content {
+            width: 100%;
+            gap: 1.75rem;
+          }
+
+          .contact-item {
+            gap: 1rem;
+          }
+
+          .contact-info {
+            min-width: 0;
+          }
+
+          .icon-container {
+            width: 48px;
+            height: 48px;
+          }
+
+          .contact-info h3 {
+            font-size: 1.25rem;
+          }
+
+          .contact-info p,
+          .contact-info a {
+            font-size: 1.05rem;
+            line-height: 1.45;
+            overflow-wrap: anywhere;
+          }
+
+          .contact-info a {
+            display: inline-block;
+            padding: 0.65rem 0;
+          }
         }
       `}</style>
     </div>
